@@ -1,0 +1,59 @@
+name: GoreeCloud Foundation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/goreecloud/**'
+      - '.github/workflows/goreecloud-foundation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/goreecloud/**'
+      - '.github/workflows/goreecloud-foundation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-foundation:
+    name: Validate GoreeCloud fork foundation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Validate governance records
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            LICENSE
+            docs/goreecloud/UPSTREAM.md
+            docs/goreecloud/PRODUCT.md
+            docs/goreecloud/ARCHITECTURE.md
+            docs/goreecloud/CI-AUDIT.md
+          )
+
+          for path in "${required_files[@]}"; do
+            test -s "$path" || { echo "Required file missing or empty: $path" >&2; exit 1; }
+          done
+
+          grep -Fq 'GNU AFFERO GENERAL PUBLIC LICENSE' LICENSE
+          grep -Fq 'caea849fee509909d42220e327c855cc7de21b2a' docs/goreecloud/UPSTREAM.md
+          grep -Fq 'immich-app/immich' docs/goreecloud/UPSTREAM.md
+          grep -Fq 'GoreeCloud/goreecloud-gallery' docs/goreecloud/PRODUCT.md
+          grep -Fq 'Gallery must not be deleted, overwritten, or repurposed to create Photos.' docs/goreecloud/PRODUCT.md
+          grep -Fq 'Photos Vault' docs/goreecloud/ARCHITECTURE.md
+          grep -Fq 'Immich independence' docs/goreecloud/ARCHITECTURE.md
+          grep -Fq 'PUSH_O_MATIC_APP_CLIENT_ID' docs/goreecloud/CI-AUDIT.md
+
+          echo 'GoreeCloud Photos fork foundation validation passed.'
