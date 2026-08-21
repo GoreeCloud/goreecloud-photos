@@ -52,6 +52,7 @@ jobs:
             server/src/goreecloud/contracts/sync-state.ts
             server/src/goreecloud/contracts/authorization.ts
             server/src/goreecloud/adapters/immich-media-authority.adapter.ts
+            server/src/goreecloud/adapters/immich-media-authority.adapter.spec.ts
           )
 
           for path in "${required_files[@]}"; do
@@ -78,12 +79,17 @@ jobs:
           grep -Fq 'publicationBoundary' server/src/goreecloud/contracts/authorization.ts
 
           adapter=server/src/goreecloud/adapters/immich-media-authority.adapter.ts
+          adapter_test=server/src/goreecloud/adapters/immich-media-authority.adapter.spec.ts
           grep -Fq 'implements MediaAuthorityProvider' "$adapter"
           grep -Fq "provider: 'immich-inherited-filesystem'" "$adapter"
           grep -Fq 'Read-only compatibility boundary' "$adapter"
-          if grep -Eq '\.(create|update|remove|deleteAll|updateAll)\(' "$adapter"; then
-            echo 'Read-only adapter contains a repository write call.' >&2
+          if grep -Eq 'this\.assets\.(create|update|remove|deleteAll|updateAll)\(' "$adapter"; then
+            echo 'Read-only adapter contains an AssetRepository write call.' >&2
             exit 1
           fi
+
+          grep -Fq "verifies the inherited SHA-1 checksum without modifying the source file" "$adapter_test"
+          grep -Fq "fails closed for missing assets, unsupported checksum algorithms, and filesystem errors" "$adapter_test"
+          grep -Fq "throws a bounded error when an original cannot be resolved" "$adapter_test"
 
           echo 'GoreeCloud Photos fork foundation and native-transition validation passed.'
