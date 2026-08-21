@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - 'docs/goreecloud/**'
+      - 'server/src/goreecloud/**'
       - '.github/workflows/goreecloud-foundation.yml'
   push:
     branches: [main]
     paths:
       - 'docs/goreecloud/**'
+      - 'server/src/goreecloud/**'
       - '.github/workflows/goreecloud-foundation.yml'
   workflow_dispatch:
 
@@ -44,6 +46,11 @@ jobs:
             docs/goreecloud/WORKFLOW-CLASSIFICATION.md
             docs/goreecloud/PRIVACY-BOUNDARY.md
             docs/goreecloud/NATIVE-CONTRACTS.md
+            server/src/goreecloud/contracts/index.ts
+            server/src/goreecloud/contracts/media-authority.ts
+            server/src/goreecloud/contracts/portable-transfer.ts
+            server/src/goreecloud/contracts/sync-state.ts
+            server/src/goreecloud/contracts/authorization.ts
           )
 
           for path in "${required_files[@]}"; do
@@ -63,5 +70,10 @@ jobs:
           grep -Fq 'Photos native contract set 0.1' docs/goreecloud/NATIVE-CONTRACTS.md
           grep -Fq 'A database dump alone is not considered a complete portable user export.' docs/goreecloud/NATIVE-CONTRACTS.md
           grep -Fq 'GoreeCloud Gallery remains independently useful without Photos.' docs/goreecloud/NATIVE-CONTRACTS.md
+
+          grep -Fq "authority: 'original'" server/src/goreecloud/contracts/media-authority.ts
+          grep -Fq "format: 'goreecloud-photos-portable-export'" server/src/goreecloud/contracts/portable-transfer.ts
+          grep -Fq 'destructiveActionAuthorized' server/src/goreecloud/contracts/sync-state.ts
+          grep -Fq 'publicationBoundary' server/src/goreecloud/contracts/authorization.ts
 
           echo 'GoreeCloud Photos fork foundation and native-transition validation passed.'
