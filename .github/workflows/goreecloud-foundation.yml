@@ -41,6 +41,7 @@ jobs:
             LICENSE
             docs/goreecloud/UPSTREAM.md
             docs/goreecloud/PRODUCT.md
+            docs/goreecloud/KEEPSAKE.md
             docs/goreecloud/ARCHITECTURE.md
             docs/goreecloud/CI-AUDIT.md
             docs/goreecloud/WORKFLOW-CLASSIFICATION.md
@@ -64,7 +65,10 @@ jobs:
           grep -Fq 'immich-app/immich' docs/goreecloud/UPSTREAM.md
           grep -Fq 'GoreeCloud/goreecloud-gallery' docs/goreecloud/PRODUCT.md
           grep -Fq 'Gallery must not be deleted, overwritten, or repurposed to create Photos.' docs/goreecloud/PRODUCT.md
-          grep -Fq 'Photos Vault' docs/goreecloud/ARCHITECTURE.md
+          grep -Fq 'GoreeCloud Photos — powered by Keepsake' docs/goreecloud/PRODUCT.md
+          grep -Fq 'Keepsake is the official first-party feature umbrella for GoreeCloud Photos.' docs/goreecloud/KEEPSAKE.md
+          grep -Fq 'Keepsake Vault' docs/goreecloud/ARCHITECTURE.md
+          grep -Fq 'Keepsake Vision' docs/goreecloud/ARCHITECTURE.md
           grep -Fq 'Immich independence' docs/goreecloud/ARCHITECTURE.md
           grep -Fq 'PUSH_O_MATIC_APP_CLIENT_ID' docs/goreecloud/CI-AUDIT.md
           grep -Fq 'immich-app/devtools' docs/goreecloud/WORKFLOW-CLASSIFICATION.md
@@ -92,4 +96,4 @@ jobs:
           grep -Fq "fails closed for missing assets, unsupported checksum algorithms, and filesystem errors" "$adapter_test"
           grep -Fq "throws a bounded error when an original cannot be resolved" "$adapter_test"
 
-          echo 'GoreeCloud Photos fork foundation and native-transition validation passed.'
+          echo 'GoreeCloud Photos / Keepsake fork foundation and native-transition validation passed.'
