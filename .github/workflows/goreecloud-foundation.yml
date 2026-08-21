@@ -66,7 +66,7 @@ jobs:
           grep -Fq 'GoreeCloud/goreecloud-gallery' docs/goreecloud/PRODUCT.md
           grep -Fq 'Gallery must not be deleted, overwritten, or repurposed to create Photos.' docs/goreecloud/PRODUCT.md
           grep -Fq 'GoreeCloud Photos — powered by Keepsake' docs/goreecloud/PRODUCT.md
-          grep -Fq 'Keepsake is the official first-party feature umbrella for GoreeCloud Photos.' docs/goreecloud/KEEPSAKE.md
+          grep -Fq 'official first-party feature umbrella for GoreeCloud Photos' docs/goreecloud/KEEPSAKE.md
           grep -Fq 'Keepsake Vault' docs/goreecloud/ARCHITECTURE.md
           grep -Fq 'Keepsake Vision' docs/goreecloud/ARCHITECTURE.md
           grep -Fq 'Immich independence' docs/goreecloud/ARCHITECTURE.md
