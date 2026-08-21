@@ -4,23 +4,29 @@
 
 GoreeCloud Photos begins from an Immich foundation and immediately enters a controlled fork-to-native transition. The objective is not a permanent visual rebrand. GoreeCloud will introduce first-party boundaries so individual inherited capabilities can be replaced safely over time.
 
+## Keepsake capability umbrella
+
+**Keepsake** is the first-party capability umbrella for GoreeCloud Photos. The preferred expression is **GoreeCloud Photos — powered by Keepsake**.
+
+Keepsake is an architectural and product feature-family identity, not a replacement for the GoreeCloud Photos application name. New GoreeCloud-owned feature surfaces and domain boundaries should use Keepsake naming where appropriate while inherited Immich internals remain explicitly transitional.
+
 ## Capability domains
 
-The target architecture separates the product into independently evolvable domains:
+The target architecture separates the product into independently evolvable domains beneath Keepsake:
 
-- **Photos Core** — users, libraries, assets, metadata, albums, favorites, archive, Trash, permissions, and primary application behavior.
-- **Photos Vault** — authoritative original-media storage, storage abstraction, integrity state, media placement, and durable-file access.
-- **Photos Sync** — device backup, upload queues, resumable transfers, duplicate detection, synchronization state, retry behavior, and bandwidth controls.
-- **Photos Memories** — anniversaries, on-this-day experiences, trips, contextual collections, and rediscovery.
-- **Photos Search** — metadata, filename, date, place, indexed, semantic, and visual search.
-- **Photos Vision** — local facial recognition, object recognition, OCR, embeddings, classification, and similarity processing.
-- **Photos Studio** — non-destructive editing, crop, rotation, adjustments, transforms, video-editing foundations, and restoration of originals.
-- **Photos Share** — albums, family sharing, partner sharing, controlled links, expiration, download permissions, and sharing policy.
-- **Photos Places** — map browsing, locations, geographic search, trips, and clusters.
-- **Photos Import** — Google Photos Takeout, Ente exports, Immich data, filesystem trees, camera media, device media directories, supported archives, and future Photos exports.
-- **Photos Export** — portable export of originals and associated authoritative metadata.
-- **Photos Recovery** — integrity validation, rebuild tooling, backup verification, restoration, and reconstruction support.
-- **Photos Clients** — web, Android, Linux desktop, CLI, and future iOS clients.
+- **Keepsake Core** — users, libraries, assets, metadata, albums, favorites, archive, Trash, permissions, and primary application behavior.
+- **Keepsake Vault** — authoritative original-media storage, storage abstraction, integrity state, media placement, and durable-file access.
+- **Keepsake Sync** — device backup, upload queues, resumable transfers, duplicate detection, synchronization state, retry behavior, and bandwidth controls.
+- **Keepsake Memories** — anniversaries, on-this-day experiences, trips, contextual collections, and rediscovery.
+- **Keepsake Search** — metadata, filename, date, place, indexed, semantic, and visual search.
+- **Keepsake Vision** — local facial recognition, object recognition, OCR, embeddings, classification, and similarity processing.
+- **Keepsake Studio** — non-destructive editing, crop, rotation, adjustments, transforms, video-editing foundations, and restoration of originals.
+- **Keepsake Share** — albums, family sharing, partner sharing, controlled links, expiration, download permissions, and sharing policy.
+- **Keepsake Places** — map browsing, locations, geographic search, trips, and clusters.
+- **Keepsake Import** — Google Photos Takeout, Ente exports, Immich data, filesystem trees, camera media, device media directories, supported archives, and future Photos exports.
+- **Keepsake Export** — portable export of originals and associated authoritative metadata.
+- **Keepsake Recovery** — integrity validation, rebuild tooling, backup verification, restoration, and reconstruction support.
+- **Keepsake Clients** — web, Android, Linux desktop, CLI, and future iOS clients.
 
 ## Data authority
 
@@ -46,12 +52,12 @@ New GoreeCloud-specific features should prefer GoreeCloud-owned contracts rather
 
 The first boundaries to formalize are:
 
-1. storage and original-media authority;
-2. import and migration;
-3. portable export;
-4. synchronization and backup state;
+1. Keepsake Vault storage and original-media authority;
+2. Keepsake Import and migration;
+3. Keepsake Export and portable transfer;
+4. Keepsake Sync and backup state;
 5. authorization and personal/shared library boundaries;
-6. local AI and metadata-processing policy.
+6. Keepsake Vision and local metadata-processing policy.
 
 ## Migration requirements
 
@@ -75,7 +81,7 @@ Record provenance, validate the inherited build, establish GoreeCloud governance
 
 ### Phase 2 — GoreeCloud domain contracts
 
-Introduce first-party storage, import/export, authorization, synchronization, API, and other domain contracts.
+Introduce first-party Keepsake storage, import/export, authorization, synchronization, API, and other domain contracts.
 
 ### Phase 3 — Native server replacement
 
