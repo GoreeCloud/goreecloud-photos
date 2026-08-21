@@ -30,7 +30,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Validate governance records
+      - name: Validate governance and native-transition records
         shell: bash
         run: |
           set -euo pipefail
@@ -41,6 +41,9 @@ jobs:
             docs/goreecloud/PRODUCT.md
             docs/goreecloud/ARCHITECTURE.md
             docs/goreecloud/CI-AUDIT.md
+            docs/goreecloud/WORKFLOW-CLASSIFICATION.md
+            docs/goreecloud/PRIVACY-BOUNDARY.md
+            docs/goreecloud/NATIVE-CONTRACTS.md
           )
 
           for path in "${required_files[@]}"; do
@@ -55,5 +58,10 @@ jobs:
           grep -Fq 'Photos Vault' docs/goreecloud/ARCHITECTURE.md
           grep -Fq 'Immich independence' docs/goreecloud/ARCHITECTURE.md
           grep -Fq 'PUSH_O_MATIC_APP_CLIENT_ID' docs/goreecloud/CI-AUDIT.md
+          grep -Fq 'immich-app/devtools' docs/goreecloud/WORKFLOW-CLASSIFICATION.md
+          grep -Fq 'No production migration or runtime cutover is authorized by this document.' docs/goreecloud/PRIVACY-BOUNDARY.md
+          grep -Fq 'Photos native contract set 0.1' docs/goreecloud/NATIVE-CONTRACTS.md
+          grep -Fq 'A database dump alone is not considered a complete portable user export.' docs/goreecloud/NATIVE-CONTRACTS.md
+          grep -Fq 'GoreeCloud Gallery remains independently useful without Photos.' docs/goreecloud/NATIVE-CONTRACTS.md
 
-          echo 'GoreeCloud Photos fork foundation validation passed.'
+          echo 'GoreeCloud Photos fork foundation and native-transition validation passed.'
