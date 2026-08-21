@@ -51,6 +51,7 @@ jobs:
             server/src/goreecloud/contracts/portable-transfer.ts
             server/src/goreecloud/contracts/sync-state.ts
             server/src/goreecloud/contracts/authorization.ts
+            server/src/goreecloud/adapters/immich-media-authority.adapter.ts
           )
 
           for path in "${required_files[@]}"; do
@@ -75,5 +76,14 @@ jobs:
           grep -Fq "format: 'goreecloud-photos-portable-export'" server/src/goreecloud/contracts/portable-transfer.ts
           grep -Fq 'destructiveActionAuthorized' server/src/goreecloud/contracts/sync-state.ts
           grep -Fq 'publicationBoundary' server/src/goreecloud/contracts/authorization.ts
+
+          adapter=server/src/goreecloud/adapters/immich-media-authority.adapter.ts
+          grep -Fq 'implements MediaAuthorityProvider' "$adapter"
+          grep -Fq "provider: 'immich-inherited-filesystem'" "$adapter"
+          grep -Fq 'Read-only compatibility boundary' "$adapter"
+          if grep -Eq '\.(create|update|remove|deleteAll|updateAll)\(' "$adapter"; then
+            echo 'Read-only adapter contains a repository write call.' >&2
+            exit 1
+          fi
 
           echo 'GoreeCloud Photos fork foundation and native-transition validation passed.'
