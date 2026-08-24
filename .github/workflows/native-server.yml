@@ -3,13 +3,13 @@ name: Native Server
 on:
   pull_request:
     paths:
-      - "native/server/**"
-      - ".github/workflows/native-server.yml"
+      - 'native/server/**'
+      - '.github/workflows/native-server.yml'
   push:
     branches: [main]
     paths:
-      - "native/server/**"
-      - ".github/workflows/native-server.yml"
+      - 'native/server/**'
+      - '.github/workflows/native-server.yml'
 
 permissions:
   contents: read
