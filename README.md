@@ -1,135 +1,69 @@
-<p align="center"> 
-  <br/>
-  <a href="https://opensource.org/license/agpl-v3"><img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg?color=3F51B5&style=for-the-badge&label=License&logoColor=000000&labelColor=ececec" alt="License: AGPLv3"></a>
-  <a href="https://discord.immich.app">
-    <img src="https://img.shields.io/discord/979116623879368755.svg?label=Discord&logo=Discord&style=for-the-badge&logoColor=000000&labelColor=ececec" alt="Discord"/>
-  </a>
-  <br/>
-  <br/>
-</p>
+# GoreeCloud Photos
 
-<p align="center">
-<img src="design/immich-logo-stacked-light.svg" width="300" title="Login With Custom URL">
-</p>
-<h3 align="center">High performance self-hosted photo and video management solution</h3>
-<br/>
-<a href="https://immich.app">
-<img src="design/immich-screenshots.png" title="Main Screenshot">
-</a>
-<br/>
+GoreeCloud Photos is a privacy-first, self-hosted photo and video platform for backup, synchronization, organization, memories, search, sharing, migration, preservation, export, and recovery.
 
-<p align="center">
-  <a href="readme_i18n/README_ca_ES.md">Català</a>
-  <a href="readme_i18n/README_es_ES.md">Español</a>
-  <a href="readme_i18n/README_fr_FR.md">Français</a>
-  <a href="readme_i18n/README_it_IT.md">Italiano</a>
-  <a href="readme_i18n/README_ja_JP.md">日本語</a>
-  <a href="readme_i18n/README_ko_KR.md">한국어</a>
-  <a href="readme_i18n/README_de_DE.md">Deutsch</a>
-  <a href="readme_i18n/README_nl_NL.md">Nederlands</a>
-  <a href="readme_i18n/README_tr_TR.md">Türkçe</a>
-  <a href="readme_i18n/README_zh_CN.md">简体中文</a>
-  <a href="readme_i18n/README_zh_TW.md">正體中文</a>
-  <a href="readme_i18n/README_uk_UA.md">Українська</a>
-  <a href="readme_i18n/README_ru_RU.md">Русский</a>
-  <a href="readme_i18n/README_bg_BG.md">Български</a>
-  <a href="readme_i18n/README_pt_BR.md">Português Brasileiro</a>
-  <a href="readme_i18n/README_sv_SE.md">Svenska</a>
-  <a href="readme_i18n/README_ar_JO.md">العربية</a>
-  <a href="readme_i18n/README_vi_VN.md">Tiếng Việt</a>
-  <a href="readme_i18n/README_th_TH.md">ภาษาไทย</a>
-  <a href="readme_i18n/README_ml_IN.md">മലയാളം</a>
-</p>
+**GoreeCloud Photos — powered by Keepsake.**
 
+> **Development status:** Active native development. GoreeCloud-owned code under `native/` is the active product-development authority. The inherited Immich tree remains in this repository for provenance, compatibility research, migration, recovery, and rollback; it is not the approved long-term GoreeCloud application architecture and this repository is not yet production-ready.
 
-> [!WARNING]
-> ⚠️ Always follow [3-2-1](https://www.backblaze.com/blog/the-3-2-1-backup-strategy/) backup plan for your precious photos and videos!
-> 
- 
+## Product boundary
 
-> [!NOTE]
-> You can find the main documentation, including installation guides, at https://immich.app/.
+GoreeCloud Photos is the server-backed GoreeCloud photo and video platform. It is distinct from **GoreeCloud Gallery**, which remains a separate device-local and offline-first media viewer and manager. Gallery must not depend on a Photos server to perform its core local functions.
 
-## Links
+## Keepsake
 
-- [Documentation](https://docs.immich.app/)
-- [About](https://docs.immich.app/overview/introduction)
-- [Installation](https://docs.immich.app/install/requirements)
-- [Roadmap](https://immich.app/roadmap)
-- [Demo](#demo)
-- [Features](#features)
-- [Translations](https://docs.immich.app/developer/translations)
-- [Contributing](https://docs.immich.app/overview/support-the-project)
+Keepsake is the first-party GoreeCloud Photos capability family. It organizes native responsibilities including:
 
-## Demo
+- Keepsake Core
+- Keepsake Vault
+- Keepsake Sync
+- Keepsake Memories
+- Keepsake Search
+- Keepsake Vision
+- Keepsake Studio
+- Keepsake Share
+- Keepsake Places
+- Keepsake Import
+- Keepsake Export
+- Keepsake Recovery
+- Keepsake Clients
 
-Access the demo [here](https://demo.immich.app). For the mobile app, you can use `https://demo.immich.app` for the `Server Endpoint URL`.
+Keepsake is a capability identity inside GoreeCloud Photos, not a separate application, service, repository, database authority, or permission boundary.
 
-### Login credentials
+## Current native foundation
 
-| Email           | Password |
-| --------------- | -------- |
-| demo@immich.app | demo     |
+The GoreeCloud-owned native server foundation under `native/server/` currently includes:
 
-## Features
+- authoritative photo/video media records separated from rebuildable derived state;
+- owner-scoped media repository reads;
+- SHA-256 integrity metadata and duplicate-media rejection foundations;
+- a versioned portable export manifest carrying original-media identity, portable paths, integrity information, and album relationships;
+- Keepsake Sync state modeling for Pending, Uploading, Synced, and Failed lifecycle states;
+- controlled retry/resynchronization transitions, required failure codes, upload-attempt tracking, and timestamp-ordering safeguards;
+- focused Go tests and a dedicated Native Server GitHub Actions workflow.
 
-| Features                                     | Mobile | Web |
-| :------------------------------------------- | ------ | --- |
-| Upload and view videos and photos            | Yes    | Yes |
-| Auto backup when the app is opened           | Yes    | N/A |
-| Prevent duplication of assets                | Yes    | Yes |
-| Selective album(s) for backup                | Yes    | N/A |
-| Download photos and videos to local device   | Yes    | Yes |
-| Multi-user support                           | Yes    | Yes |
-| Album and Shared albums                      | Yes    | Yes |
-| Scrubbable/draggable scrollbar               | Yes    | Yes |
-| Support raw formats                          | Yes    | Yes |
-| Metadata view (EXIF, map)                    | Yes    | Yes |
-| Search by metadata, objects, faces, and CLIP | Yes    | Yes |
-| Administrative functions (user management)   | No     | Yes |
-| Background backup                            | Yes    | N/A |
-| Virtual scroll                               | Yes    | Yes |
-| OAuth support                                | Yes    | Yes |
-| API Keys                                     | N/A    | Yes |
-| LivePhoto/MotionPhoto backup and playback    | Yes    | Yes |
-| Support 360 degree image display             | No     | Yes |
-| User-defined storage structure               | Yes    | Yes |
-| Public Sharing                               | Yes    | Yes |
-| Archive and Favorites                        | Yes    | Yes |
-| Global Map                                   | Yes    | Yes |
-| Partner Sharing                              | Yes    | Yes |
-| Facial recognition and clustering            | Yes    | Yes |
-| Memories (x years ago)                       | Yes    | Yes |
-| Offline support                              | Yes    | No  |
-| Read-only gallery                            | Yes    | Yes |
-| Stacked Photos                               | Yes    | Yes |
-| Tags                                         | No     | Yes |
-| Folder View                                  | Yes    | Yes |
+The native foundation does not yet constitute a complete backup service. Persistent upload APIs, resumable transfers, retry scheduling, bandwidth policy, duplicate detection across the transfer pipeline, full import/export execution, search/intelligence, clients, and production deployment remain under development.
 
-## Translations
+## Media authority and privacy
 
-Read more about translations [here](https://docs.immich.app/developer/translations).
+Original photos and videos are authoritative user-owned information. Application indexes, thumbnails, embeddings, caches, and other generated state must remain replaceable or reconstructable unless a future requirement explicitly promotes them to durable authority.
 
-<a href="https://hosted.weblate.org/engage/immich/">
-<img src="https://hosted.weblate.org/widget/immich/immich/multi-auto.svg" alt="Translation status" />
-</a>
+Privacy-sensitive media analysis is intended to be local-first. External analytics, advertising identifiers, behavioral tracking, and third-party usage profiling are not required product architecture.
 
-## Repository activity
+Do not commit private media, credentials, signing material, tokens, keys, private storage paths, or user-specific media metadata to this repository.
 
-![Activities](https://repobeats.axiom.co/api/embed/9e86d9dc3ddd137161f2f6d2e758d7863b1789cb.svg "Repobeats analytics image")
+## Development direction
 
-## Star history
+GoreeCloud Photos is developed natively from the ground up under GoreeCloud-controlled application boundaries. Critical mature dependencies may be used only where narrowly justified. The retained Immich tree is transitional reference material for compatibility, migration, recovery, and provenance rather than the permanent GoreeCloud product authority.
 
-<a href="https://star-history.com/#immich-app/immich&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=immich-app/immich&type=date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=immich-app/immich&type=date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=immich-app/immich&type=date" width="100%" />
- </picture>
-</a>
+See the GoreeCloud repository records under [`docs/goreecloud/`](docs/goreecloud/), including product, architecture, Keepsake identity, upstream provenance, privacy boundary, and native-contract documentation.
 
-## Contributors
+## Upstream provenance
 
-<a href="https://github.com/immich-app/immich/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=immich-app/immich" width="100%"/>
-</a>
+This repository preserves its original Immich fork history and attribution. The retained upstream source remains subject to the applicable GNU Affero General Public License version 3 obligations.
+
+See [`docs/goreecloud/UPSTREAM.md`](docs/goreecloud/UPSTREAM.md) and [`LICENSE`](LICENSE).
+
+## Status
+
+GoreeCloud Photos remains active development software. No production deployment, user-media migration, destructive synchronization cutover, or production-service acceptance is implied by the current native foundations.
