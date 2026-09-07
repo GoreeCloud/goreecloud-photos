@@ -83,3 +83,20 @@ func TestUploadCheckpointPlansBandwidthBoundedChunk(t *testing.T) {
 		t.Fatalf("chunk=%+v ok=%v err=%v", chunk, ok, err)
 	}
 }
+
+func TestUploadCheckpointRejectsInvalidLifecycleBeforeBandwidthDenial(t *testing.T) {
+	now := time.Date(2026, 9, 7, 19, 0, 0, 0, time.UTC)
+	checkpoint, err := NewUploadCheckpoint("owner", "media", 1000, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, ok, err := checkpoint.NextChunkWithBandwidth(
+		BandwidthPolicy{BytesPerSecond: 100, MaxChunkBytes: 80, AllowMetered: false},
+		TransferNetworkMetered,
+		time.Second,
+	)
+	if err == nil || ok {
+		t.Fatalf("ok=%v err=%v", ok, err)
+	}
+}
