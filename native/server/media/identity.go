@@ -33,9 +33,9 @@ func ContentIdentityForItem(item Item) (ContentIdentity, error) {
 	return NewContentIdentity(item.OwnerID, item.SizeBytes, item.SHA256)
 }
 
-func (i ContentIdentity) OwnerID() string { return i.ownerID }
+func (i ContentIdentity) OwnerID() string  { return i.ownerID }
 func (i ContentIdentity) SizeBytes() int64 { return i.sizeBytes }
-func (i ContentIdentity) SHA256() string { return i.sha256 }
+func (i ContentIdentity) SHA256() string   { return i.sha256 }
 
 func (i ContentIdentity) Matches(other ContentIdentity) bool {
 	return validContentIdentity(i) && validContentIdentity(other) &&
