@@ -51,13 +51,18 @@ func (p BandwidthPolicy) ChunkLimit(network TransferNetwork, window time.Duratio
 }
 
 // NextChunkWithBandwidth combines the validated resumable checkpoint with a
-// pure bandwidth budget. Network observation and actual rate enforcement remain
+// pure bandwidth budget. Lifecycle validation happens before network-policy
+// denial so a non-uploading checkpoint cannot be silently treated as merely
+// bandwidth-blocked. Network observation and actual rate enforcement remain
 // responsibilities of the future transfer executor.
 func (c UploadCheckpoint) NextChunkWithBandwidth(
 	policy BandwidthPolicy,
 	network TransferNetwork,
 	window time.Duration,
 ) (UploadChunk, bool, error) {
+	if c.record.State != StateUploading {
+		return UploadChunk{}, false, errors.New("upload chunk planning requires uploading sync state")
+	}
 	limit, allowed, err := policy.ChunkLimit(network, window)
 	if err != nil || !allowed {
 		return UploadChunk{}, false, err
