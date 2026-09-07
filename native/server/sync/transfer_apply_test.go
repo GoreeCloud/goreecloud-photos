@@ -127,24 +127,24 @@ func TestApplyTransferStepRejectsStaleOrMalformedResults(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkpoint, _ = checkpoint.Transition(StateUploading, now.Add(time.Second), "")
-	step, err := checkpoint.NextChunk(20)
-	if err != nil {
-		t.Fatal(err)
+	chunk, ok, err := checkpoint.NextChunk(20)
+	if err != nil || !ok {
+		t.Fatalf("chunk=%+v ok=%v err=%v", chunk, ok, err)
 	}
 
 	if _, err := ApplyTransferStep(
 		checkpoint,
-		TransferStep{Action: TransferActionSendChunk, Chunk: step},
+		TransferStep{Action: TransferActionSendChunk, Chunk: chunk},
 		time.Time{},
-		TransferResult{CommittedBytes: step.Offset},
+		TransferResult{CommittedBytes: chunk.Offset},
 	); err == nil {
 		t.Fatal("expected non-advancing success rejection")
 	}
 	if _, err := ApplyTransferStep(
 		checkpoint,
-		TransferStep{Action: TransferActionSendChunk, Chunk: step},
+		TransferStep{Action: TransferActionSendChunk, Chunk: chunk},
 		now.Add(2*time.Second),
-		TransferResult{CommittedBytes: step.Offset, FailureCode: " timeout "},
+		TransferResult{CommittedBytes: chunk.Offset, FailureCode: " timeout "},
 	); err == nil {
 		t.Fatal("expected noncanonical failure-code rejection")
 	}
