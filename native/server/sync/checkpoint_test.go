@@ -1,7 +1,6 @@
 package sync
 
 import (
-	"errors"
 	"testing"
 	"time"
 )
@@ -137,8 +136,7 @@ func TestUploadCheckpointRejectsInvalidConstruction(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, _, err = checkpoint.NextChunk(1)
-	if err == nil || errors.Is(err, nil) {
+	if _, _, err := checkpoint.NextChunk(1); err == nil {
 		t.Fatal("expected pending state to reject chunk planning")
 	}
 }
