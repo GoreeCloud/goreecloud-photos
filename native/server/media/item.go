@@ -39,8 +39,8 @@ func (i Item) Validate() error {
 	if i.SizeBytes < 0 {
 		return errors.New("size must be non-negative")
 	}
-	if len(i.SHA256) != 64 {
-		return errors.New("sha256 must be a 64-character hex digest")
+	if _, ok := canonicalSHA256Digest(i.SHA256); !ok {
+		return errors.New("sha256 must be a 64-character hexadecimal digest")
 	}
 	return nil
 }
