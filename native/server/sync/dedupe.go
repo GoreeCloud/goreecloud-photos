@@ -28,7 +28,7 @@ func NewContentFingerprint(sizeBytes int64, sha256Hex string) (ContentFingerprin
 	return ContentFingerprint{sizeBytes: sizeBytes, sha256Hex: sha256Hex}, nil
 }
 
-func (f ContentFingerprint) SizeBytes() int64   { return f.sizeBytes }
+func (f ContentFingerprint) SizeBytes() int64  { return f.sizeBytes }
 func (f ContentFingerprint) SHA256Hex() string { return f.sha256Hex }
 
 func (f ContentFingerprint) valid() bool {
