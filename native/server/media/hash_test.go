@@ -14,7 +14,7 @@ func TestHashContentSHA256StreamsExactBytes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	const expected = "ff6fc19eaee6df02aaf40d54335822fb1ac87db97db66ef4ae7b703c4791b440"
+	const expected = "ee6d10383aa9c221e58c1ed0b78fc059a4cd863459c67a9ce7dc9d5dbef97a0e"
 	if digest != expected {
 		t.Fatalf("digest=%q", digest)
 	}
@@ -74,10 +74,14 @@ func TestHashContentIdentityBuildsOwnerScopedIdentity(t *testing.T) {
 	}
 }
 
-func TestHashContentIdentityRejectsInvalidOwnerAfterReading(t *testing.T) {
+func TestHashContentIdentityRejectsInvalidOwnerBeforeReading(t *testing.T) {
 	payload := []byte("content")
-	if _, err := HashContentIdentity(" owner ", int64(len(payload)), bytes.NewReader(payload)); !errors.Is(err, ErrInvalidContentIdentity) {
+	reader := bytes.NewReader(payload)
+	if _, err := HashContentIdentity(" owner ", int64(len(payload)), reader); !errors.Is(err, ErrInvalidContentIdentity) {
 		t.Fatalf("owner error=%v", err)
+	}
+	if reader.Len() != len(payload) {
+		t.Fatalf("invalid owner consumed %d bytes", len(payload)-reader.Len())
 	}
 }
 
