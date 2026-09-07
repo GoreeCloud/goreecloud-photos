@@ -74,7 +74,13 @@ func TestUploadProgressRejectsInvalidState(t *testing.T) {
 	if _, err := invalid.Advance(101); err == nil {
 		t.Fatal("expected invalid stored progress state to be rejected")
 	}
+	if invalid.ResumeOffset() != 0 {
+		t.Fatalf("invalid progress resume offset = %d, want 0", invalid.ResumeOffset())
+	}
 	if invalid.RemainingBytes() != 0 {
 		t.Fatalf("invalid progress remaining bytes = %d, want 0", invalid.RemainingBytes())
+	}
+	if invalid.Complete() {
+		t.Fatal("invalid progress must not report complete")
 	}
 }
