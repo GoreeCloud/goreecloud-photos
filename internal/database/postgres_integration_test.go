@@ -41,6 +41,13 @@ func TestPostgreSQLIntegrationAppliesCoreMigrations(t *testing.T) {
 	if err := applyMigration(ctx, database, "000002_upload_parts.up.sql"); err != nil {
 		t.Fatalf("apply upload-parts up migration: %v", err)
 	}
+	if err := database.Probe(ctx); !errors.Is(err, ErrProbeFailed) {
+		t.Fatalf("expected readiness probe to fail before upload-session metadata migration, got %v", err)
+	}
+
+	if err := applyMigration(ctx, database, "000003_upload_session_metadata.up.sql"); err != nil {
+		t.Fatalf("apply upload-session metadata migration: %v", err)
+	}
 	if err := database.Probe(ctx); err != nil {
 		t.Fatalf("probe PostgreSQL after migrations: %v", err)
 	}
@@ -66,6 +73,9 @@ func TestPostgreSQLIntegrationAppliesCoreMigrations(t *testing.T) {
 		}
 	}
 
+	if err := applyMigration(ctx, database, "000003_upload_session_metadata.down.sql"); err != nil {
+		t.Fatalf("apply upload-session metadata down migration: %v", err)
+	}
 	if err := applyMigration(ctx, database, "000002_upload_parts.down.sql"); err != nil {
 		t.Fatalf("apply upload-parts down migration: %v", err)
 	}
@@ -86,7 +96,11 @@ func resetAndApplyMigrations(ctx context.Context, database *PostgreSQL) error {
 	if err := resetPublicSchema(ctx, database); err != nil {
 		return err
 	}
-	for _, name := range []string{"000001_core.up.sql", "000002_upload_parts.up.sql"} {
+	for _, name := range []string{
+		"000001_core.up.sql",
+		"000002_upload_parts.up.sql",
+		"000003_upload_session_metadata.up.sql",
+	} {
 		if err := applyMigration(ctx, database, name); err != nil {
 			return err
 		}
