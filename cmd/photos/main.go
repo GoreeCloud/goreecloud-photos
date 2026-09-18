@@ -22,13 +22,15 @@ func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	var originalStore storage.OriginalStore
+	var uploadStaging storage.UploadStagingStore
 	if cfg.StorageRoot != "" {
 		store, err := storage.NewFilesystem(cfg.StorageRoot)
 		if err != nil {
-			logger.Error("initialize original media store", "error", err)
+			logger.Error("initialize media storage", "error", err)
 			os.Exit(1)
 		}
 		originalStore = store
+		uploadStaging = store
 	}
 
 	var databaseAdapter *database.PostgreSQL
@@ -43,8 +45,11 @@ func main() {
 	}
 
 	handler := httpapi.New(buildinfo.Version, buildinfo.Lifecycle, httpapi.Dependencies{
-		Storage:  originalStore,
-		Database: databaseAdapter,
+		Storage:          originalStore,
+		Database:         databaseAdapter,
+		UploadRepository: databaseAdapter,
+		UploadStaging:    uploadStaging,
+		UploadAdmission:  nil,
 	})
 
 	server := &http.Server{
@@ -75,6 +80,7 @@ func main() {
 		"listen", cfg.ListenAddress,
 		"storage_configured", originalStore != nil,
 		"database_configured", databaseAdapter != nil,
+		"upload_admission_configured", false,
 		"version", buildinfo.Version,
 		"lifecycle", buildinfo.Lifecycle,
 	)
