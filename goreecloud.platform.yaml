@@ -15,40 +15,41 @@ version: "0.1.0"
 supported_platforms: []
 
 api:
-  versions: []
+  versions:
+    - "v1-planned"
   endpoints: []
 
 platform_systems:
   manager:
     result: applicable-blocked
     version: null
-    evidence: []
-    notes: "Storage, processing, policy, sharing, quotas, jobs, backup health, and recovery administration are planned but no Photos-specific Manager integration or acceptance exists."
+    evidence: ["PLATFORM-INTEGRATIONS.md", "ARCHITECTURE.md"]
+    notes: "Aggregate administration, storage, queue, policy, backup, and recovery views are architecturally defined; no Photos-specific Manager runtime integration or acceptance exists."
   privacy_shield:
     result: applicable-blocked
     version: null
-    evidence: ["PRIVACY POLICY.md", "SPECIFICATIONS.md"]
-    notes: "Photos will process highly sensitive media, face, location, metadata, search, sharing, and intelligence data; no Photos-specific Privacy Shield runtime integration or acceptance exists."
+    evidence: ["PRIVACY POLICY.md", "PLATFORM-INTEGRATIONS.md", "DATA-MODEL.md"]
+    notes: "Privacy-sensitive data classes, fail-closed processing, minimization, retention, derived-data separation, and revocation boundaries are defined; no Photos-specific Privacy Shield runtime integration or acceptance exists."
   wardveil_security:
     result: applicable-blocked
     version: null
-    evidence: ["SECURITY.md", "SPECIFICATIONS.md"]
-    notes: "Media ingestion, authorization, session, sharing, and administrative security boundaries are planned; no Photos-specific Wardveil runtime integration or acceptance exists."
+    evidence: ["SECURITY.md", "PLATFORM-INTEGRATIONS.md", "ARCHITECTURE.md"]
+    notes: "Untrusted ingestion, worker isolation, authorization, share-link, session, administration, and evidence boundaries are defined; no Photos-specific Wardveil runtime integration or acceptance exists."
   everkeep:
     result: applicable-blocked
     version: null
-    evidence: ["FEATURE-ROADMAP.md", "SPECIFICATIONS.md"]
-    notes: "Originals, metadata, albums, recovery material, integrity, restore testing, migration, and succession are planned; no Photos-specific Everkeep implementation or acceptance exists."
+    evidence: ["RECOVERY.md", "PLATFORM-INTEGRATIONS.md", "FEATURE-ROADMAP.md"]
+    notes: "Authoritative/rebuildable data classes, recovery layers, clean-target restore, integrity, portability, migration, and succession boundaries are defined; no Photos-specific Everkeep implementation or acceptance exists."
   glaze_ui:
     result: applicable-blocked
     version: null
-    evidence: ["BRANDING.md", "SPECIFICATIONS.md"]
-    notes: "Glaze UI 1.5.1 is the current required Stable consumer target; no Photos runtime UI or application-specific conformance evidence exists."
+    evidence: ["BRANDING.md", "PLATFORM-INTEGRATIONS.md", "ARCHITECTURE.md", "GLAZE-UI-ACCEPTANCE.md"]
+    notes: "Glaze UI 1.5.1 is the current required Stable consumer target and platform-native client boundary is defined; no Photos runtime UI or application-specific conformance evidence exists."
   mesh:
     result: applicable-blocked
     version: null
-    evidence: ["FEATURE-ROADMAP.md"]
-    notes: "Capability discovery, dependency coordination, and cross-application handoff are planned but not implemented or accepted."
+    evidence: ["PLATFORM-INTEGRATIONS.md", "ARCHITECTURE.md"]
+    notes: "Capability discovery and minimal cross-application handoff boundaries are defined; no Photos-specific Mesh implementation or acceptance exists."
     capabilities: []
     dependencies: []
     published_events: []
@@ -56,18 +57,18 @@ platform_systems:
   identity:
     result: applicable-blocked
     version: null
-    evidence: ["SECURITY.md", "SPECIFICATIONS.md"]
-    notes: "Accounts, sessions, devices, authentication, ownership, sharing, and authorization are planned; no Photos-specific Identity implementation or acceptance exists."
+    evidence: ["PLATFORM-INTEGRATIONS.md", "DATA-MODEL.md", "API.md"]
+    notes: "Identity owns authentication/subjects/devices while Photos owns library membership, asset ownership, and domain authorization; no Photos-specific Identity runtime integration or acceptance exists."
   policy:
     result: applicable-blocked
     version: null
-    evidence: ["FEATURE-ROADMAP.md", "PRIVACY POLICY.md"]
-    notes: "No Photos-specific policy evaluation, decision evidence, distribution, or enforcement-coordination integration is implemented or accepted."
+    evidence: ["PLATFORM-INTEGRATIONS.md", "API.md"]
+    notes: "Photos policy decision points and fail-closed enforcement boundary are defined; no Photos-specific Policy runtime integration or acceptance exists."
   observability:
     result: applicable-blocked
     version: null
-    evidence: ["FEATURE-ROADMAP.md"]
-    notes: "No Photos-specific operational telemetry, health, diagnostics, queue, storage, performance, or recovery-readiness integration is implemented or accepted."
+    evidence: ["PLATFORM-INTEGRATIONS.md", "ARCHITECTURE.md"]
+    notes: "Privacy-minimized operational evidence classes are defined; no Photos-specific Observability integration or acceptance exists."
 
 health:
   health_endpoint: null
@@ -77,13 +78,13 @@ continuity:
   backup:
     required: true
     requirements:
-      - "Original media, authoritative library metadata, album relationships, user metadata, required sharing state, and authorized recovery material require durable backup."
-      - "Generated derivatives should remain rebuildable from protected originals whenever practical."
+      - "Original media, authoritative library metadata, ownership, album relationships, user metadata, edit instructions, required sharing state, and authorized recovery material require durable backup."
+      - "Generated derivatives and ordinary indexes should remain rebuildable from protected authoritative data whenever practical."
   restore:
     required: true
     requirements:
       - "Clean-target restore must be tested before any production recovery claim."
-      - "Restore must preserve ownership, originals, metadata, album organization, and other authoritative state within the approved recovery scope."
+      - "Restore must validate original-object integrity, ownership, metadata, album organization, sharing state, and representative application-level usability."
   export:
     required: true
     requirements:
@@ -113,12 +114,19 @@ conformance:
     - SPECIFICATIONS.md
     - FEATURES.md
     - FEATURE-ROADMAP.md
+    - ARCHITECTURE.md
+    - DATA-MODEL.md
+    - API.md
+    - RECOVERY.md
+    - PLATFORM-INTEGRATIONS.md
+    - DEPENDENCIES.md
+    - GLAZE-UI-ACCEPTANCE.md
     - SECURITY.md
     - "PRIVACY POLICY.md"
     - goreecloud.platform.yaml
   blockers:
     - "No supported Photos application or service runtime exists."
-    - "No media ingestion, storage, upload, synchronization, search, sharing, intelligence, editing, or recovery implementation is verified."
+    - "No executable server, PostgreSQL schema, object-store adapter, client implementation, or worker implementation is verified."
     - "No Photos-specific acceptance evidence exists for any of the nine Integral Platform Systems."
     - "No Glaze UI 1.5.1 Photos consumer-conformance evidence exists."
     - "No release artifact, deployment, production-readiness evidence, or Stable qualification exists."

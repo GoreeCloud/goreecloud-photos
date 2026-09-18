@@ -21,13 +21,13 @@
 
 ## Immediate repository work
 
-1. Resolve the implementation stack and architecture through governed decisions.
-2. Define the Asset model, API/synchronization contracts, immutable-original storage boundary, and rebuildable-derivative model.
-3. Define Photos-specific Identity, Privacy Shield, Wardveil Security, Everkeep, Manager, Mesh, Policy, and Observability contracts.
-4. Add validation/CI when there is concrete source or a meaningful repository-validation target.
+1. Establish the first executable server source tree and pinned Go module from the Phase 0 architecture baseline.
+2. Implement the initial PostgreSQL schema and migrations for libraries, assets, originals, uploads, synchronization changes, and durable jobs.
+3. Implement the smallest end-to-end upload/storage slice behind the defined API and storage-driver boundaries.
+4. Extend CI from repository/contract validation to Go formatting, vetting, unit tests, build validation, and later web/Android/Linux client validation as source is introduced.
 5. Establish repository-local official visual identity assets.
 6. Resolve branch-protection state using an authorized administration path.
-7. Begin the smallest Phase 0 implementation slice only after architecture, privacy, security, storage, and recovery boundaries are explicit.
+7. Keep all nine Integral Platform System integrations blocked until runtime implementation and evidence exist.
 
 ## Status discipline
 

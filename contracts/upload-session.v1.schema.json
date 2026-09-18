@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://goreecloud.com/contracts/photos/upload-session.v1.schema.json",
+  "title": "GoreeCloud Photos Upload Session v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "upload_id",
+    "library_id",
+    "expected_size",
+    "received_bytes",
+    "part_size",
+    "state",
+    "expires_at",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "upload_id": {"type": "string", "format": "uuid"},
+    "library_id": {"type": "string", "format": "uuid"},
+    "expected_size": {"type": "integer", "minimum": 0},
+    "expected_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "received_bytes": {"type": "integer", "minimum": 0},
+    "part_size": {"type": "integer", "minimum": 1},
+    "state": {
+      "enum": ["open", "receiving", "verifying", "complete", "failed", "expired", "cancelled"]
+    },
+    "expires_at": {"type": "string", "format": "date-time"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}
