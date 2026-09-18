@@ -15,6 +15,7 @@ import (
 	"github.com/GoreeCloud/goreecloud-photos/internal/database"
 	"github.com/GoreeCloud/goreecloud-photos/internal/httpapi"
 	"github.com/GoreeCloud/goreecloud-photos/internal/storage"
+	"github.com/GoreeCloud/goreecloud-photos/internal/upload"
 )
 
 func main() {
@@ -22,12 +23,14 @@ func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	var originalStore storage.OriginalStore
+	var filesystemStore *storage.Filesystem
 	if cfg.StorageRoot != "" {
 		store, err := storage.NewFilesystem(cfg.StorageRoot)
 		if err != nil {
 			logger.Error("initialize original media store", "error", err)
 			os.Exit(1)
 		}
+		filesystemStore = store
 		originalStore = store
 	}
 
@@ -42,29 +45,28 @@ func main() {
 		defer databaseAdapter.Close()
 	}
 
+	var uploadService *upload.Service
+	if databaseAdapter != nil && filesystemStore != nil {
+		uploadService = upload.NewService(databaseAdapter, filesystemStore)
+	}
+
 	handler := httpapi.New(buildinfo.Version, buildinfo.Lifecycle, httpapi.Dependencies{
-		Storage:  originalStore,
-		Database: databaseAdapter,
+		Storage: originalStore, Database: databaseAdapter, Uploads: uploadService, Identity: nil,
 	})
 
 	server := &http.Server{
-		Addr:              cfg.ListenAddress,
-		Handler:           handler,
-		ReadHeaderTimeout: 5 * time.Second,
-		ReadTimeout:       30 * time.Second,
-		WriteTimeout:      30 * time.Second,
-		IdleTimeout:       60 * time.Second,
-		MaxHeaderBytes:    1 << 20,
+		Addr: cfg.ListenAddress, Handler: handler,
+		ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 30 * time.Second,
+		WriteTimeout: 30 * time.Second, IdleTimeout: 60 * time.Second,
+		MaxHeaderBytes: 1 << 20,
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
-
 	go func() {
 		<-ctx.Done()
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-
 		if err := server.Shutdown(shutdownCtx); err != nil {
 			logger.Error("shutdown server", "error", err)
 		}
@@ -75,6 +77,8 @@ func main() {
 		"listen", cfg.ListenAddress,
 		"storage_configured", originalStore != nil,
 		"database_configured", databaseAdapter != nil,
+		"upload_service_configured", uploadService != nil,
+		"identity_integration", "blocked",
 		"version", buildinfo.Version,
 		"lifecycle", buildinfo.Lifecycle,
 	)
