@@ -65,6 +65,7 @@ jobs:
           unformatted="$(gofmt -l .)"
           if [[ -n "$unformatted" ]]; then
             printf 'Files require gofmt:\n%s\n' "$unformatted" >&2
+            gofmt -d $unformatted
             exit 1
           fi
 
