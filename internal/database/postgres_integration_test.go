@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -23,12 +24,11 @@ func TestPostgreSQLIntegrationAppliesCoreMigration(t *testing.T) {
 	}
 	defer database.Close()
 
-	if err := database.Probe(ctx); err != nil {
-		t.Fatalf("probe PostgreSQL: %v", err)
-	}
-
 	if err := execSQLScript(ctx, database, "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"); err != nil {
 		t.Fatalf("reset test schema: %v", err)
+	}
+	if err := database.Probe(ctx); !errors.Is(err, ErrProbeFailed) {
+		t.Fatalf("expected readiness probe to fail before migration, got %v", err)
 	}
 
 	up, err := os.ReadFile(filepath.Join("..", "..", "migrations", "000001_core.up.sql"))
@@ -37,6 +37,9 @@ func TestPostgreSQLIntegrationAppliesCoreMigration(t *testing.T) {
 	}
 	if err := execSQLScript(ctx, database, string(up)); err != nil {
 		t.Fatalf("apply up migration: %v", err)
+	}
+	if err := database.Probe(ctx); err != nil {
+		t.Fatalf("probe PostgreSQL after migration: %v", err)
 	}
 
 	for _, table := range []string{
