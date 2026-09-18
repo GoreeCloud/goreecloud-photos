@@ -38,12 +38,15 @@ Verified implementation foundation:
 - fail-closed readiness reporting;
 - immutable filesystem original-media store adapter with SHA-256 verification and overwrite protection;
 - initial PostgreSQL migration baseline;
-- Go unit tests and pinned exact-head CI covering formatting, module reproducibility, vet, tests, migration validation, and binary build.
+- pgx v5.11.0 PostgreSQL runtime adapter;
+- schema-aware database readiness that fails before the core migration and passes after the complete schema is present;
+- disposable PostgreSQL 18.6 integration validation covering migration up/down and readiness;
+- Go unit/integration tests and pinned exact-head CI covering formatting, module reproducibility, vet, tests, migration validation, and binary build.
 
 Remaining before Phase 1 can advance materially:
 
-- implement the PostgreSQL runtime adapter and make readiness capable of passing only when both database and original-media storage are healthy;
 - implement durable upload-session persistence and the first resumable upload/API path;
+- use the verified PostgreSQL adapter for transactional library/upload operations rather than readiness only;
 - atomically create original-object/asset/synchronization records after verified media commit;
 - add an S3-compatible storage backend behind the existing storage boundary;
 - pin and document any newly introduced implementation dependencies;

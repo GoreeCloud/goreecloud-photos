@@ -7,6 +7,7 @@ const defaultListenAddress = "127.0.0.1:8780"
 type Config struct {
 	ListenAddress string
 	StorageRoot   string
+	DatabaseURL   string
 }
 
 func LoadFromEnv() Config {
@@ -18,5 +19,6 @@ func LoadFromEnv() Config {
 	return Config{
 		ListenAddress: listenAddress,
 		StorageRoot:   os.Getenv("GC_PHOTOS_STORAGE_ROOT"),
+		DatabaseURL:   os.Getenv("GC_PHOTOS_DATABASE_URL"),
 	}
 }
