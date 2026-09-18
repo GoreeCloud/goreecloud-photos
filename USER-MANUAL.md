@@ -6,11 +6,11 @@
 
 Nothing in this repository currently provides a supported GoreeCloud Photos client or server.
 
-The repository is in Concept / Planning state and contains product, roadmap, privacy, security, and governance documentation.
+The repository has an Experimental engineering server foundation, but there is still no supported GoreeCloud Photos client or ordinary photo-library service for users.
 
 ## Important backup warning
 
-Do **not** delete photographs or videos from a device on the assumption that GoreeCloud Photos has backed them up. No verified Photos backup runtime currently exists.
+Do **not** delete photographs or videos from a device on the assumption that GoreeCloud Photos has backed them up. No verified user-facing Photos backup workflow exists. The Experimental server does not expose a media-upload API and is intentionally not ready for ordinary use.
 
 Do not treat repository documentation, screenshots, planned status indicators, or future architecture as proof that any personal media is stored, protected, synchronized, encrypted, recoverable, or available elsewhere.
 
