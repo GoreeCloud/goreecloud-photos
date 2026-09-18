@@ -172,7 +172,7 @@ func (p *PostgreSQL) CreateUploadSessionIdempotent(ctx context.Context, params C
 	if _, err := tx.Exec(ctx, `
 		UPDATE idempotency_records
 		SET response_status = 201,
-			response_body = jsonb_build_object('upload_id', $3)
+			response_body = jsonb_build_object('upload_id', $3::text)
 		WHERE actor_subject_id = $1 AND idempotency_key = $2
 	`, params.Session.ActorSubjectID, params.IdempotencyKey, session.UploadID); err != nil {
 		return UploadSession{}, false, fmt.Errorf("complete idempotency record: %w", err)
