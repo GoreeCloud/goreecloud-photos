@@ -1,7 +1,7 @@
 # GoreeCloud Photos — Current Features
 
 **Lifecycle:** Experimental  
-**Implementation status:** Database-aware Experimental server foundation validated; not ready for ordinary Photos use.  
+**Implementation status:** Database-backed upload-session persistence validated; no user-facing upload path or ordinary Photos service exists.  
 **Verified:** 2026-09-18
 
 ## Current implemented product functionality
@@ -19,8 +19,12 @@ The current Experimental slice provides:
 - Optional filesystem original-media store initialization through `GC_PHOTOS_STORAGE_ROOT`.
 - Immutable filesystem writes using staging, SHA-256 calculation/verification, no-overwrite commit semantics, bounded object keys, and regular-file checks.
 - Filesystem storage readiness probing.
-- Initial PostgreSQL migration baseline for libraries, memberships, original objects, assets, device asset state, upload sessions, ordered synchronization changes, durable jobs, and idempotency records.
-- Real PostgreSQL integration validation that exercises migration up/down and the before/after schema-aware readiness boundary.
+- PostgreSQL migration baseline for libraries, memberships, original objects, assets, device asset state, upload sessions, per-part upload evidence, ordered synchronization changes, durable jobs, and idempotency records.
+- Durable upload-session creation/inspection and per-part receipt persistence in PostgreSQL.
+- Per-part checksum evidence with independently retryable, out-of-order part recording.
+- Identical part retries are idempotent; conflicting retries are rejected without changing committed evidence.
+- Upload-session metadata survives PostgreSQL adapter restart and expired sessions fail closed.
+- Real PostgreSQL integration validation that exercises migration up/down, schema-aware readiness, durable upload persistence, retry/conflict behavior, and expiry.
 - Automated Go formatting, module reproducibility, vet, unit/integration tests, migration-baseline validation, and binary-build validation.
 - Repository/contract baseline validation.
 
@@ -28,7 +32,7 @@ The current Experimental slice provides:
 
 The current foundation does **not** provide:
 
-- a media-upload HTTP API or durable upload workflow;
+- a media-upload HTTP API, media-byte staging/assembly path, or upload completion-to-Asset transaction;
 - authenticated users, GoreeCloud Identity runtime integration, or Photos authorization;
 - multi-user library operations;
 - asset creation through the API;

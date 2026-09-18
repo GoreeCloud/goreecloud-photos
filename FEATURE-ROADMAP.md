@@ -5,7 +5,7 @@
 **As of:** 2026-09-18  
 **Canonical specification:** SPECIFICATIONS.md  
 **Repository:** GoreeCloud/goreecloud-photos  
-**Implementation status:** First executable server foundation validated; ordinary Photos functionality and supported deployment remain unimplemented.
+**Implementation status:** PostgreSQL runtime and durable upload-session/part persistence validated; ordinary Photos upload, library functionality, and supported deployment remain unimplemented.
 
 > Roadmap entries are planned work unless a later exact revision and evidence explicitly establish implementation and acceptance.
 
@@ -41,12 +41,13 @@ Verified implementation foundation:
 - pgx v5.11.0 PostgreSQL runtime adapter;
 - schema-aware database readiness that fails before the core migration and passes after the complete schema is present;
 - disposable PostgreSQL 18.6 integration validation covering migration up/down and readiness;
+- durable PostgreSQL upload-session and per-part receipt persistence with restart durability, out-of-order parts, identical-retry idempotency, conflicting-retry rejection, and deterministic expiry;
 - Go unit/integration tests and pinned exact-head CI covering formatting, module reproducibility, vet, tests, migration validation, and binary build.
 
 Remaining before Phase 1 can advance materially:
 
-- implement durable upload-session persistence and the first resumable upload/API path;
-- use the verified PostgreSQL adapter for transactional library/upload operations rather than readiness only;
+- implement the first resumable upload HTTP/API path and media-byte staging/assembly;
+- complete upload finalization so verified immutable media, OriginalObject, Asset, and SyncChange state commit with explicit transactional rules;
 - atomically create original-object/asset/synchronization records after verified media commit;
 - add an S3-compatible storage backend behind the existing storage boundary;
 - pin and document any newly introduced implementation dependencies;
@@ -58,7 +59,7 @@ Remaining before Phase 1 can advance materially:
 
 ## Phase 1 — Core Photo Server
 
-**State:** Planned.
+**State:** Experimental foundation in progress.
 
 Implement and verify:
 

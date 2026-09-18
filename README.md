@@ -48,10 +48,11 @@ The verified Experimental foundation currently includes:
 - a pgx v5.11.0 PostgreSQL runtime adapter configured by `GC_PHOTOS_DATABASE_URL`;
 - schema-aware PostgreSQL readiness that rejects an unmigrated or incomplete core schema;
 - an immutable filesystem original-media store adapter with SHA-256 verification and overwrite protection;
-- an initial PostgreSQL schema/migration baseline for libraries, ownership, assets, originals, upload sessions, synchronization changes, durable jobs, and idempotency records;
-- database-backed integration tests against pinned PostgreSQL 18.6 plus repository, migration, vet, unit-test, and build validation.
+- an initial PostgreSQL schema/migration baseline for libraries, ownership, assets, originals, upload sessions, per-part upload receipt evidence, synchronization changes, durable jobs, and idempotency records;
+- durable PostgreSQL upload-session and per-part persistence with restart survival, out-of-order parts, idempotent identical retries, conflicting-retry rejection, and deterministic expiry;
+- database-backed integration tests against pinned PostgreSQL 18.6 covering migration/readiness plus upload-session persistence, retry, conflict, and expiry behavior, alongside repository, migration, vet, unit-test, and build validation.
 
-PostgreSQL remains the selected authoritative relational store, but no runtime database adapter is implemented yet. TypeScript + React web, native Android, native Linux desktop, S3-compatible storage, and Mobile B remain planned implementation targets rather than current runtime capabilities.
+PostgreSQL is the implemented Experimental relational runtime boundary. Durable upload metadata now exists, but the service still has no media-upload HTTP API, media-byte staging/assembly path, upload completion-to-Asset transaction, authenticated library workflow, S3-compatible storage, or user-facing client. TypeScript + React web, native Android, native Linux desktop, and Mobile B remain planned implementation targets.
 
 ## Platform targets
 
@@ -68,7 +69,7 @@ All application-specific platform integrations remain blocked pending implementa
 
 The product is being developed as original GoreeCloud-controlled software. It is not intended to be a renamed or permanently architecture-dependent copy of another photo platform.
 
-An Experimental server foundation is verified, including PostgreSQL connectivity/readiness and immutable filesystem storage primitives, but it still does not expose a media-upload API or authenticated library workflow. Do not use this repository as evidence that media has been backed up, synchronized, protected, encrypted, indexed, recoverable, or safely deletable from a device.
+An Experimental server foundation is verified, including PostgreSQL connectivity/readiness, durable upload-session/part metadata, and immutable filesystem storage primitives, but it still does not expose a media-upload HTTP API, media-byte transfer path, or authenticated library workflow. Do not use this repository as evidence that media has been backed up, synchronized, protected, encrypted, indexed, recoverable, or safely deletable from a device.
 
 ## License
 
