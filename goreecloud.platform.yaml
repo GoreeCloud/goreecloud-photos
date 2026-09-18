@@ -1,0 +1,124 @@
+# GoreeCloud Photos Platform Contract declaration
+# Declaration validity does not prove implementation, acceptance, release, or production readiness.
+
+schema_version: "0.4"
+
+component:
+  type: application
+  id: goreecloud-photos
+  product_name: GoreeCloud Photos
+  repository: GoreeCloud/goreecloud-photos
+
+lifecycle: concept
+version: "0.1.0"
+
+supported_platforms: []
+
+api:
+  versions: []
+  endpoints: []
+
+platform_systems:
+  manager:
+    result: applicable-blocked
+    version: null
+    evidence: []
+    notes: "Storage, processing, policy, sharing, quotas, jobs, backup health, and recovery administration are planned but no Photos-specific Manager integration or acceptance exists."
+  privacy_shield:
+    result: applicable-blocked
+    version: null
+    evidence: ["PRIVACY POLICY.md", "SPECIFICATIONS.md"]
+    notes: "Photos will process highly sensitive media, face, location, metadata, search, sharing, and intelligence data; no Photos-specific Privacy Shield runtime integration or acceptance exists."
+  wardveil_security:
+    result: applicable-blocked
+    version: null
+    evidence: ["SECURITY.md", "SPECIFICATIONS.md"]
+    notes: "Media ingestion, authorization, session, sharing, and administrative security boundaries are planned; no Photos-specific Wardveil runtime integration or acceptance exists."
+  everkeep:
+    result: applicable-blocked
+    version: null
+    evidence: ["FEATURE-ROADMAP.md", "SPECIFICATIONS.md"]
+    notes: "Originals, metadata, albums, recovery material, integrity, restore testing, migration, and succession are planned; no Photos-specific Everkeep implementation or acceptance exists."
+  glaze_ui:
+    result: applicable-blocked
+    version: null
+    evidence: ["BRANDING.md", "SPECIFICATIONS.md"]
+    notes: "Glaze UI 1.5.1 is the current required Stable consumer target; no Photos runtime UI or application-specific conformance evidence exists."
+  mesh:
+    result: applicable-blocked
+    version: null
+    evidence: ["FEATURE-ROADMAP.md"]
+    notes: "Capability discovery, dependency coordination, and cross-application handoff are planned but not implemented or accepted."
+    capabilities: []
+    dependencies: []
+    published_events: []
+    consumed_events: []
+  identity:
+    result: applicable-blocked
+    version: null
+    evidence: ["SECURITY.md", "SPECIFICATIONS.md"]
+    notes: "Accounts, sessions, devices, authentication, ownership, sharing, and authorization are planned; no Photos-specific Identity implementation or acceptance exists."
+  policy:
+    result: applicable-blocked
+    version: null
+    evidence: ["FEATURE-ROADMAP.md", "PRIVACY POLICY.md"]
+    notes: "No Photos-specific policy evaluation, decision evidence, distribution, or enforcement-coordination integration is implemented or accepted."
+  observability:
+    result: applicable-blocked
+    version: null
+    evidence: ["FEATURE-ROADMAP.md"]
+    notes: "No Photos-specific operational telemetry, health, diagnostics, queue, storage, performance, or recovery-readiness integration is implemented or accepted."
+
+health:
+  health_endpoint: null
+  readiness_endpoint: null
+
+continuity:
+  backup:
+    required: true
+    requirements:
+      - "Original media, authoritative library metadata, album relationships, user metadata, required sharing state, and authorized recovery material require durable backup."
+      - "Generated derivatives should remain rebuildable from protected originals whenever practical."
+  restore:
+    required: true
+    requirements:
+      - "Clean-target restore must be tested before any production recovery claim."
+      - "Restore must preserve ownership, originals, metadata, album organization, and other authoritative state within the approved recovery scope."
+  export:
+    required: true
+    requirements:
+      - "Users require selected and full-library export of originals plus portable metadata and a machine-readable library manifest."
+  portability:
+    required: true
+    requirements:
+      - "The library must remain reconstructable without relying exclusively on an opaque internal database or on continued availability of GoreeCloud Photos."
+
+external_dependencies: []
+
+compatibility:
+  platform_contract: "0.4"
+  glaze_ui_required: "1.5.1"
+  requires: []
+  provides: []
+
+evidence:
+  acceptance_tests: []
+  release: []
+
+conformance:
+  status: unverified
+  validated_at: null
+  evidence:
+    - README.md
+    - SPECIFICATIONS.md
+    - FEATURES.md
+    - FEATURE-ROADMAP.md
+    - SECURITY.md
+    - "PRIVACY POLICY.md"
+    - goreecloud.platform.yaml
+  blockers:
+    - "No supported Photos application or service runtime exists."
+    - "No media ingestion, storage, upload, synchronization, search, sharing, intelligence, editing, or recovery implementation is verified."
+    - "No Photos-specific acceptance evidence exists for any of the nine Integral Platform Systems."
+    - "No Glaze UI 1.5.1 Photos consumer-conformance evidence exists."
+    - "No release artifact, deployment, production-readiness evidence, or Stable qualification exists."
