@@ -119,8 +119,8 @@ func TestReadinessFailsClosedWithoutDatabaseConfiguration(t *testing.T) {
 		t.Fatal(err)
 	}
 	server := New("test", "experimental", Dependencies{
-		Storage:          store,
-		UploadAdmission:  testUploadAdmission{decision: UploadAdmissionDecision{ActorSubjectID: "subject:test"}},
+		Storage:         store,
+		UploadAdmission: testUploadAdmission{decision: UploadAdmissionDecision{ActorSubjectID: "subject:test"}},
 	})
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/ready", nil)
 	response := httptest.NewRecorder()
