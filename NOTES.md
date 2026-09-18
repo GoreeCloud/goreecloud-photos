@@ -5,7 +5,8 @@
 ## Verified state
 
 - Repository: `GoreeCloud/goreecloud-photos`.
-- Default branch: `main`; PR #6 is the current PostgreSQL-runtime candidate until merged.
+- Default branch: `main`.
+- PR #6 carries the PostgreSQL runtime/readiness slice; final merge evidence is recorded in the GoreeCloud Photos change log and task ledger.
 - Product lifecycle: **Experimental**. PR #6 extends the validated prototype with PostgreSQL runtime/readiness integration without advancing the lifecycle.
 - Go 1.27.1 is pinned through `go.mod` and exact CI toolchain verification.
 - The server defaults to `127.0.0.1:8780`.
