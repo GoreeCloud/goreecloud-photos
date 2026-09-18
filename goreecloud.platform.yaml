@@ -10,7 +10,7 @@ component:
   repository: GoreeCloud/goreecloud-photos
 
 lifecycle: experimental
-version: "0.1.0-experimental.1"
+version: "0.1.0-experimental.2"
 
 supported_platforms: []
 
@@ -113,6 +113,7 @@ evidence:
     - internal/config/config_test.go
     - internal/storage/fsstore_test.go
     - internal/database/postgres_integration_test.go
+    - internal/database/upload_sessions_integration_test.go
     - internal/httpapi/server_test.go
     - scripts/validate_migrations.py
   release: []
@@ -136,8 +137,8 @@ conformance:
     - "PRIVACY POLICY.md"
     - goreecloud.platform.yaml
   blockers:
-    - "Only an Experimental health/readiness and filesystem-storage foundation exists; no supported Photos service or user-facing client exists."
-    - "The executable server, PostgreSQL schema baseline, and PostgreSQL readiness adapter are verified, but no media-upload API, database-backed library workflow, S3-compatible adapter, client implementation, or worker pipeline is implemented."
+    - "Only an Experimental server, storage, PostgreSQL, and durable upload-metadata foundation exists; no supported Photos service or user-facing client exists."
+    - "The executable server, PostgreSQL schema/readiness adapter, and durable upload session/part persistence are verified, but no media-upload HTTP API, media-byte staging/assembly path, asset commit workflow, S3-compatible adapter, client implementation, or worker pipeline is implemented."
     - "No Photos-specific acceptance evidence exists for any of the nine Integral Platform Systems."
     - "No Glaze UI 1.5.1 Photos consumer-conformance evidence exists."
     - "No release artifact, deployment, production-readiness evidence, or Stable qualification exists."
