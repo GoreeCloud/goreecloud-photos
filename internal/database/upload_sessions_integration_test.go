@@ -191,7 +191,7 @@ func TestUploadSessionRejectsInvalidPartBoundsAndPersistsExpiry(t *testing.T) {
 		LibraryID:      libraryID,
 		ExpectedSize:   10,
 		PartSize:       4,
-		ExpiresAt:      time.Now().Add(50 * time.Millisecond),
+		ExpiresAt:      time.Now().Add(time.Hour),
 	}); err != nil {
 		t.Fatalf("create upload session: %v", err)
 	}
@@ -205,7 +205,14 @@ func TestUploadSessionRejectsInvalidPartBoundsAndPersistsExpiry(t *testing.T) {
 		t.Fatalf("expected partial non-final part rejection, got %v", err)
 	}
 
-	time.Sleep(75 * time.Millisecond)
+	if _, err := database.pool.Exec(ctx, `
+		UPDATE upload_sessions
+		SET expires_at = NOW() - INTERVAL '1 second'
+		WHERE upload_id = $1
+	`, uploadID); err != nil {
+		t.Fatalf("force upload session expiry: %v", err)
+	}
+
 	if _, err := database.RecordUploadPart(ctx, RecordUploadPartParams{
 		UploadID:   uploadID,
 		PartNumber: 1,
