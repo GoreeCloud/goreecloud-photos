@@ -30,6 +30,7 @@ The design principle is that original media remains user-owned, understandable o
 - [RECOVERY.md](RECOVERY.md) — authoritative/rebuildable data and clean-target recovery model.
 - [PLATFORM-INTEGRATIONS.md](PLATFORM-INTEGRATIONS.md) — nine-system GoreeCloud integration boundaries.
 - [DEPENDENCIES.md](DEPENDENCIES.md) — selected implementation stack and dependency rules.
+- [GLAZE-UI-ACCEPTANCE.md](GLAZE-UI-ACCEPTANCE.md) — Glaze UI 1.5.1 and accessibility acceptance plan.
 - [FEATURES.md](FEATURES.md) — current implemented capability state.
 - [USER-MANUAL.md](USER-MANUAL.md) — current user-facing availability and usage status.
 - [PRIVACY POLICY.md](PRIVACY%20POLICY.md) — current privacy boundary.

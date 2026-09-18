@@ -43,7 +43,7 @@ platform_systems:
   glaze_ui:
     result: applicable-blocked
     version: null
-    evidence: ["BRANDING.md", "PLATFORM-INTEGRATIONS.md", "ARCHITECTURE.md"]
+    evidence: ["BRANDING.md", "PLATFORM-INTEGRATIONS.md", "ARCHITECTURE.md", "GLAZE-UI-ACCEPTANCE.md"]
     notes: "Glaze UI 1.5.1 is the current required Stable consumer target and platform-native client boundary is defined; no Photos runtime UI or application-specific conformance evidence exists."
   mesh:
     result: applicable-blocked
@@ -120,6 +120,7 @@ conformance:
     - RECOVERY.md
     - PLATFORM-INTEGRATIONS.md
     - DEPENDENCIES.md
+    - GLAZE-UI-ACCEPTANCE.md
     - SECURITY.md
     - "PRIVACY POLICY.md"
     - goreecloud.platform.yaml

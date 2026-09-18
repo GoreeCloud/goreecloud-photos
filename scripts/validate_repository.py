@@ -24,6 +24,7 @@ REQUIRED_FILES = [
     "RECOVERY.md",
     "PLATFORM-INTEGRATIONS.md",
     "DEPENDENCIES.md",
+    "GLAZE-UI-ACCEPTANCE.md",
     "LICENSE",
     ".gitignore",
     ".editorconfig",
@@ -127,6 +128,11 @@ architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
 for marker in ["Go 1.27.1", "PostgreSQL", "S3-compatible", "Kotlin + Jetpack Compose", "Rust + GTK4"]:
     if marker not in architecture:
         fail(f"ARCHITECTURE.md missing selected stack marker: {marker}")
+
+glaze = (ROOT / "GLAZE-UI-ACCEPTANCE.md").read_text(encoding="utf-8")
+for marker in ["Glaze UI V1.5 / 1.5.1", "keyboard", "screen-reader", "reduced motion", "exact-revision"]:
+    if marker not in glaze:
+        fail(f"GLAZE-UI-ACCEPTANCE.md missing acceptance marker: {marker}")
 
 integrations = (ROOT / "PLATFORM-INTEGRATIONS.md").read_text(encoding="utf-8")
 for name in [
