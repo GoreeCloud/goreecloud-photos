@@ -2,7 +2,7 @@
 
 GoreeCloud Photos is the planned GoreeCloud personal and family visual-memory platform for private photo and video backup, synchronization, organization, search, sharing, editing, intelligence, portability, and long-term preservation.
 
-> **Current state:** Concept / Planning. Phase 0 architecture and contract baselines are defined, but no supported Photos runtime, client, server, release artifact, deployment, or production acceptance has been established.
+> **Current state:** Experimental. The first executable server foundation is validated, but it is intentionally not ready for ordinary Photos use and no supported client, deployment, release artifact, or production acceptance exists.
 
 ## Product direction
 
@@ -37,19 +37,19 @@ The design principle is that original media remains user-owned, understandable o
 - [SECURITY.md](SECURITY.md) — repository-safe security guidance.
 - [goreecloud.platform.yaml](goreecloud.platform.yaml) — machine-readable platform declaration.
 
-## Phase 0 technical baseline
+## Experimental server foundation
 
-The planned first implementation uses:
+The verified Experimental foundation currently includes:
 
-- Go 1.27.1 for the server service plane;
-- PostgreSQL for authoritative relational state and the initial durable job queue;
-- a filesystem/S3-compatible storage-driver model for original and derived media;
-- TypeScript + React for the web client;
-- native Android with Kotlin + Jetpack Compose for Mobile A;
-- native Linux with Rust + GTK4 for the initial desktop client;
-- a reserved Mobile B boundary without assuming the target platform.
+- a Go 1.27.1 service binary;
+- loopback-by-default HTTP serving;
+- `GET /api/v1/health`;
+- fail-closed `GET /api/v1/ready`, which currently returns HTTP 503 because the PostgreSQL runtime adapter is not implemented;
+- an immutable filesystem original-media store adapter with SHA-256 verification and overwrite protection;
+- an initial PostgreSQL schema/migration baseline for libraries, ownership, assets, originals, upload sessions, synchronization changes, durable jobs, and idempotency records;
+- unit tests plus repository, migration, vet, test, and build validation.
 
-This is an architecture decision, not evidence that these runtimes are already implemented.
+PostgreSQL remains the selected authoritative relational store, but no runtime database adapter is implemented yet. TypeScript + React web, native Android, native Linux desktop, S3-compatible storage, and Mobile B remain planned implementation targets rather than current runtime capabilities.
 
 ## Platform targets
 
@@ -66,7 +66,7 @@ All application-specific platform integrations remain blocked pending implementa
 
 The product is being developed as original GoreeCloud-controlled software. It is not intended to be a renamed or permanently architecture-dependent copy of another photo platform.
 
-No application implementation foundation is currently verified. Do not use this repository as evidence that media has been backed up, synchronized, protected, encrypted, indexed, recoverable, or safely deletable from a device.
+An Experimental server foundation is verified, but it does not expose a media-upload API and is intentionally not ready because the database adapter is absent. Do not use this repository as evidence that media has been backed up, synchronized, protected, encrypted, indexed, recoverable, or safely deletable from a device.
 
 ## License
 
