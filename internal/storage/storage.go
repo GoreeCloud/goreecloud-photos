@@ -7,12 +7,12 @@ import (
 )
 
 var (
-	ErrAlreadyExists       = errors.New("storage object already exists")
-	ErrChecksumMismatch    = errors.New("storage checksum mismatch")
-	ErrInvalidKey          = errors.New("invalid storage object key")
-	ErrSizeMismatch        = errors.New("storage object size mismatch")
-	ErrUploadPartConflict  = errors.New("upload part conflicts with staged bytes")
-	ErrUploadPartNotFound  = errors.New("upload part not found")
+	ErrAlreadyExists      = errors.New("storage object already exists")
+	ErrChecksumMismatch   = errors.New("storage checksum mismatch")
+	ErrInvalidKey         = errors.New("invalid storage object key")
+	ErrSizeMismatch       = errors.New("storage object size mismatch")
+	ErrUploadPartConflict = errors.New("upload part conflicts with staged bytes")
+	ErrUploadPartNotFound = errors.New("upload part not found")
 )
 
 type Object struct {
