@@ -1,0 +1,66 @@
+# Operating systems and editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.code-workspace
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+secrets/
+private/
+
+# Dependencies and caches
+node_modules/
+vendor/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.gradle/
+target/
+build/
+dist/
+out/
+.cache/
+.tmp/
+tmp/
+
+# Test and coverage output
+coverage/
+.coverage
+*.lcov
+test-results/
+playwright-report/
+
+# Logs and runtime state
+*.log
+logs/
+*.pid
+*.sqlite
+*.sqlite3
+*.db
+
+# Media working data
+uploads/
+media/
+originals/
+derivatives/
+thumbnails/
+previews/
+cache/
+
+# Local tooling
+.local/
+.local-state/
