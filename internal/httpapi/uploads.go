@@ -318,23 +318,21 @@ func normalizeAndValidateCreateUploadRequest(payload *createUploadRequest) error
 	payload.CaptureTimeZone = strings.TrimSpace(payload.CaptureTimeZone)
 
 	if payload.OriginalFilename == "" || len(payload.OriginalFilename) > 1024 ||
-		strings.ContainsAny(payload.OriginalFilename, "/\\ 
-") {
+		strings.Contains(payload.OriginalFilename, "/") ||
+		strings.Contains(payload.OriginalFilename, "\\") ||
+		containsUnsafeControl(payload.OriginalFilename) {
 		return errors.New("The original filename is invalid.")
 	}
 	if payload.ExpectedSize <= 0 {
 		return errors.New("The expected asset size must be greater than zero.")
 	}
-	if len(payload.MediaType) > 255 || strings.ContainsAny(payload.MediaType, " 
-") {
+	if len(payload.MediaType) > 255 || containsUnsafeControl(payload.MediaType) {
 		return errors.New("The media type is invalid.")
 	}
-	if len(payload.DeviceID) > 256 || strings.ContainsAny(payload.DeviceID, " 
-") {
+	if len(payload.DeviceID) > 256 || containsUnsafeControl(payload.DeviceID) {
 		return errors.New("The device identifier is invalid.")
 	}
-	if len(payload.CaptureTimeZone) > 128 || strings.ContainsAny(payload.CaptureTimeZone, " 
-") {
+	if len(payload.CaptureTimeZone) > 128 || containsUnsafeControl(payload.CaptureTimeZone) {
 		return errors.New("The capture time zone is invalid.")
 	}
 	if payload.ExpectedSHA256 != nil {
@@ -352,6 +350,14 @@ func normalizeAndValidateCreateUploadRequest(payload *createUploadRequest) error
 	return nil
 }
 
+func containsUnsafeControl(value string) bool {
+	for _, character := range value {
+		if character == 0 || character == '\r' || character == '\n' {
+			return true
+		}
+	}
+	return false
+}
 func createUploadRequestFingerprint(libraryID string, payload createUploadRequest) (string, error) {
 	canonical := struct {
 		LibraryID string              `json:"library_id"`
