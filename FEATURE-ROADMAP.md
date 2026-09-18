@@ -3,35 +3,45 @@
 **Status:** Active roadmap control  
 **Lifecycle:** Concept / Planning  
 **As of:** 2026-09-18  
-**Canonical specification:** `SPECIFICATIONS.md`  
-**Repository:** `GoreeCloud/goreecloud-photos`  
-**Implementation status:** Repository documentation foundation only; no supported Photos runtime is verified.
+**Canonical specification:** SPECIFICATIONS.md  
+**Repository:** GoreeCloud/goreecloud-photos  
+**Implementation status:** Phase 0 architecture and contracts defined; no supported Photos runtime is verified.
 
 > Roadmap entries are planned work unless a later exact revision and evidence explicitly establish implementation and acceptance.
 
 ## Phase 0 — Product Foundation
 
-**State:** In progress — documentation and governance baseline only.
+**State:** Architecture/contract baseline established; executable implementation not started.
 
-Establish and validate:
+Completed definition work:
 
 - repository information architecture and required root controls;
-- architectural boundaries for clients, services, storage, jobs, and background processing;
-- stable Asset ID and ownership model;
+- initial implementation stack and dependency-minimization policy;
+- modular server/client architecture;
+- stable Asset and ownership model;
 - immutable-original and rebuildable-derivative rules;
-- upload, synchronization, edit, sharing, deletion, and conflict contracts;
-- GoreeCloud Identity model;
-- Privacy Shield authorization model;
-- Wardveil Security ingestion and access boundaries;
-- Everkeep backup, restore, integrity, preservation, migration, and succession requirements;
-- GoreeCloud Manager, Mesh, Policy, and Observability applicability;
-- Glaze UI 1.5.1 application foundation;
-- data classification, retention, export, and metadata rules;
-- API versioning and compatibility policy;
-- implementation stack and dependency decisions;
-- CI, test, security, privacy, recovery, and representative-runtime evidence strategy.
+- versioned API and resumable-upload contract;
+- cursor-based synchronization, idempotency, revisions, tombstones, and conflict model;
+- GoreeCloud Identity ownership/authorization boundary;
+- Privacy Shield sensitive-processing boundary;
+- Wardveil ingestion/security-evidence boundary;
+- Everkeep recovery/preservation scope;
+- GoreeCloud Manager, Mesh, Policy, and Observability integration architecture;
+- Glaze UI 1.5.1 client target and accessibility boundary;
+- machine-readable Asset, Sync Change, and Upload Session schemas;
+- repository/contract baseline CI validation.
 
-**Exit condition:** approved architecture and contracts exist, repository baseline is complete, no planned integration is represented as implemented, and the first bounded implementation slice can be developed without inventing unresolved security, privacy, storage, or recovery behavior.
+Remaining before Phase 1 implementation can be considered established:
+
+- repository-local official Photos visual identity assets;
+- branch-protection administration using an authorized path;
+- concrete source tree and Go module;
+- actual PostgreSQL schema/migrations;
+- executable upload/storage slice;
+- exact dependency pins for implementation packages;
+- runtime tests and evidence.
+
+**Exit condition:** the first bounded implementation slice exists and is validated without inventing unresolved security, privacy, storage, or recovery behavior.
 
 ## Phase 1 — Core Photo Server
 

@@ -2,7 +2,7 @@
 
 GoreeCloud Photos is the planned GoreeCloud personal and family visual-memory platform for private photo and video backup, synchronization, organization, search, sharing, editing, intelligence, portability, and long-term preservation.
 
-> **Current state:** Concept / planning. The repository contains product and governance documentation, but no supported Photos runtime, client, server, release artifact, deployment, or production acceptance has been established.
+> **Current state:** Concept / Planning. Phase 0 architecture and contract baselines are defined, but no supported Photos runtime, client, server, release artifact, deployment, or production acceptance has been established.
 
 ## Product direction
 
@@ -24,11 +24,31 @@ The design principle is that original media remains user-owned, understandable o
 
 - [SPECIFICATIONS.md](SPECIFICATIONS.md) — canonical product and technical specification.
 - [FEATURE-ROADMAP.md](FEATURE-ROADMAP.md) — implementation-facing roadmap and lifecycle sequence.
+- [ARCHITECTURE.md](ARCHITECTURE.md) — Phase 0 system and implementation architecture.
+- [DATA-MODEL.md](DATA-MODEL.md) — stable asset, ownership, lifecycle, and synchronization domain model.
+- [API.md](API.md) — versioned API, resumable-upload, idempotency, cursor, and conflict contracts.
+- [RECOVERY.md](RECOVERY.md) — authoritative/rebuildable data and clean-target recovery model.
+- [PLATFORM-INTEGRATIONS.md](PLATFORM-INTEGRATIONS.md) — nine-system GoreeCloud integration boundaries.
+- [DEPENDENCIES.md](DEPENDENCIES.md) — selected implementation stack and dependency rules.
 - [FEATURES.md](FEATURES.md) — current implemented capability state.
 - [USER-MANUAL.md](USER-MANUAL.md) — current user-facing availability and usage status.
 - [PRIVACY POLICY.md](PRIVACY%20POLICY.md) — current privacy boundary.
 - [SECURITY.md](SECURITY.md) — repository-safe security guidance.
 - [goreecloud.platform.yaml](goreecloud.platform.yaml) — machine-readable platform declaration.
+
+## Phase 0 technical baseline
+
+The planned first implementation uses:
+
+- Go 1.27.1 for the server service plane;
+- PostgreSQL for authoritative relational state and the initial durable job queue;
+- a filesystem/S3-compatible storage-driver model for original and derived media;
+- TypeScript + React for the web client;
+- native Android with Kotlin + Jetpack Compose for Mobile A;
+- native Linux with Rust + GTK4 for the initial desktop client;
+- a reserved Mobile B boundary without assuming the target platform.
+
+This is an architecture decision, not evidence that these runtimes are already implemented.
 
 ## Platform targets
 
@@ -39,7 +59,7 @@ The design principle is that original media remains user-owned, understandable o
 - **Resilience and preservation:** Everkeep.
 - **Platform Contract:** schema 0.4, using the current nine-system Integral Platform Systems model.
 
-These are integration targets, not implemented or accepted integrations.
+All application-specific platform integrations remain blocked pending implementation and evidence.
 
 ## Repository state
 
@@ -53,4 +73,4 @@ Unless superseded by an authorized Photos-specific license decision, this reposi
 
 ## Status integrity
 
-Documentation, design intent, planned integrations, and repository structure do not establish implementation, release, security acceptance, privacy acceptance, recovery acceptance, or production readiness. Those states require independent evidence for the exact code and runtime being evaluated.
+Documentation, machine-readable contracts, CI validation, design intent, planned integrations, and repository structure do not establish implementation, release, security acceptance, privacy acceptance, recovery acceptance, or production readiness. Those states require independent evidence for the exact code and runtime being evaluated.
