@@ -73,16 +73,16 @@ type uploadPartResponse struct {
 }
 
 type uploadSessionResponse struct {
-	UploadID        string               `json:"upload_id"`
-	LibraryID       string               `json:"library_id"`
-	ExpectedSize    int64                `json:"expected_size"`
-	ExpectedSHA256  *string              `json:"expected_sha256,omitempty"`
-	ReceivedBytes   int64                `json:"received_bytes"`
-	PartSize        int64                `json:"part_size"`
-	State           string               `json:"state"`
-	ExpiresAt       time.Time            `json:"expires_at"`
-	TransferMethod  string               `json:"transfer_method"`
-	Parts           []uploadPartResponse `json:"parts"`
+	UploadID       string               `json:"upload_id"`
+	LibraryID      string               `json:"library_id"`
+	ExpectedSize   int64                `json:"expected_size"`
+	ExpectedSHA256 *string              `json:"expected_sha256,omitempty"`
+	ReceivedBytes  int64                `json:"received_bytes"`
+	PartSize       int64                `json:"part_size"`
+	State          string               `json:"state"`
+	ExpiresAt      time.Time            `json:"expires_at"`
+	TransferMethod string               `json:"transfer_method"`
+	Parts          []uploadPartResponse `json:"parts"`
 }
 
 type putUploadPartResponse struct {
