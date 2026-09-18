@@ -94,9 +94,7 @@ if "Concept / Planning" not in readme:
     fail("README must preserve Concept / Planning lifecycle truth")
 
 features = (ROOT / "FEATURES.md").read_text(encoding="utf-8")
-if "Current implemented product functionality" not in features or "
-None.
-" not in features:
+if "Current implemented product functionality" not in features or "None." not in features:
     fail("FEATURES.md must explicitly preserve the no-runtime implementation state")
 
 platform = (ROOT / "goreecloud.platform.yaml").read_text(encoding="utf-8")
