@@ -4,9 +4,9 @@
 
 ## Current boundary
 
-This repository currently contains planning and governance documentation. It does not yet contain a supported media-ingestion service, authentication service, client runtime, storage engine, sharing service, or release artifact.
+This repository now contains an Experimental Go service foundation and filesystem original-media storage adapter. The service exposes only bounded health/readiness endpoints; it does not expose a media-ingestion HTTP API, authentication service, Photos authorization, sharing service, user-facing client, or release artifact.
 
-Therefore no statement in this repository should be interpreted as proof that personal media is currently protected by Wardveil Security or by a production-ready Photos implementation.
+The filesystem adapter's local integrity/immutability tests are not Wardveil acceptance. No statement in this repository should be interpreted as proof that personal media is currently protected by Wardveil Security or by a production-ready Photos implementation.
 
 ## Planned security requirements
 
