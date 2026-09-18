@@ -14,32 +14,32 @@ import (
 )
 
 var (
-	ErrInvalidUploadSession = errors.New("invalid upload session")
+	ErrInvalidUploadSession  = errors.New("invalid upload session")
 	ErrUploadSessionNotFound = errors.New("upload session not found")
-	ErrUploadSessionClosed = errors.New("upload session is not writable")
-	ErrUploadSessionExpired = errors.New("upload session expired")
-	ErrInvalidUploadPart = errors.New("invalid upload part")
-	ErrUploadPartConflict = errors.New("upload part conflicts with committed evidence")
+	ErrUploadSessionClosed   = errors.New("upload session is not writable")
+	ErrUploadSessionExpired  = errors.New("upload session expired")
+	ErrInvalidUploadPart     = errors.New("invalid upload part")
+	ErrUploadPartConflict    = errors.New("upload part conflicts with committed evidence")
 )
 
 var (
-	uuidPattern = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
+	uuidPattern      = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
 	sha256HexPattern = regexp.MustCompile(`^[0-9a-f]{64}$`)
 )
 
 type UploadSession struct {
-	UploadID        string
-	ActorSubjectID  string
-	LibraryID       string
-	ExpectedSize    int64
-	ExpectedSHA256  *string
-	ReceivedBytes   int64
-	PartSize        int64
-	State           string
-	ExpiresAt       time.Time
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	Parts           []UploadPart
+	UploadID       string
+	ActorSubjectID string
+	LibraryID      string
+	ExpectedSize   int64
+	ExpectedSHA256 *string
+	ReceivedBytes  int64
+	PartSize       int64
+	State          string
+	ExpiresAt      time.Time
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	Parts          []UploadPart
 }
 
 type UploadPart struct {
