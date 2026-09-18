@@ -29,6 +29,11 @@ REQUIRED_FILES = [
     ".gitignore",
     ".editorconfig",
     "goreecloud.platform.yaml",
+    "go.mod",
+    "migrations/000001_core.up.sql",
+    "migrations/000001_core.down.sql",
+    "internal/storage/fsstore.go",
+    "internal/httpapi/server.go",
     ".github/PULL_REQUEST_TEMPLATE.md",
     "contracts/README.md",
     "contracts/asset.v1.schema.json",
@@ -91,15 +96,16 @@ for relative in REQUIRED_FILES:
         fail(f"missing required repository file: {relative}")
 
 readme = (ROOT / "README.md").read_text(encoding="utf-8")
-if "Concept / Planning" not in readme:
-    fail("README must preserve Concept / Planning lifecycle truth")
+if "Experimental" not in readme:
+    fail("README must preserve Experimental lifecycle truth")
 
 features = (ROOT / "FEATURES.md").read_text(encoding="utf-8")
-if "Current implemented product functionality" not in features or "None." not in features:
-    fail("FEATURES.md must explicitly preserve the no-runtime implementation state")
+for marker in ["Current implemented product functionality", "Go 1.27.1", "/api/v1/health", "HTTP 503"]:
+    if marker not in features:
+        fail(f"FEATURES.md missing Experimental implementation marker: {marker}")
 
 platform = (ROOT / "goreecloud.platform.yaml").read_text(encoding="utf-8")
-for required in ['schema_version: "0.4"', "lifecycle: concept", 'glaze_ui_required: "1.5.1"']:
+for required in ['schema_version: "0.4"', "lifecycle: experimental", 'version: "0.1.0-experimental.0"', 'health_endpoint: "/api/v1/health"', 'readiness_endpoint: "/api/v1/ready"', 'glaze_ui_required: "1.5.1"']:
     if required not in platform:
         fail(f"platform declaration missing required baseline: {required}")
 for key in PLATFORM_SYSTEM_KEYS:
