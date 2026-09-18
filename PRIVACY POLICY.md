@@ -1,13 +1,13 @@
 # GoreeCloud Photos — Privacy Policy
 
-**Status:** Repository and planning-stage privacy boundary  
-**Runtime status:** No supported GoreeCloud Photos runtime is currently verified.
+**Status:** Experimental privacy boundary  
+**Runtime status:** Experimental engineering service exists; no supported photo-library runtime or Privacy Shield acceptance is verified.
 
 ## Current data handling
 
-The current repository contains source-control and product documentation. No GoreeCloud Photos application implementation is presently verified to ingest, upload, index, analyze, synchronize, share, or store a user's photo or video library.
+The current Experimental service exposes bounded health/readiness endpoints and includes a filesystem storage adapter exercised by tests. It does not expose a media-upload API, authentication, indexing, intelligence, synchronization, sharing, or user-facing library workflow.
 
-Accordingly, this repository does not establish a current product claim that GoreeCloud Photos is processing personal media.
+Accordingly, this repository does not establish a current claim that GoreeCloud Photos is operating a user photo/video library or that Privacy Shield integration has been accepted.
 
 ## Planned privacy principles
 
@@ -55,4 +55,4 @@ Future implementations must provide documented export and deletion behavior. Del
 
 ## Changes
 
-This policy must be revised when actual implementation begins so it describes verified processing behavior rather than only planned requirements.
+This policy must continue to be revised as implementation adds real media-processing paths so it describes verified behavior rather than planned behavior.
