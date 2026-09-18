@@ -1,44 +1,52 @@
 # GoreeCloud Photos — Current Features
 
-**Status:** Concept / Planning  
-**Implementation status:** No application implementation foundation is currently verified.  
+**Lifecycle:** Experimental  
+**Implementation status:** First executable server foundation validated; not ready for ordinary Photos use.  
 **Verified:** 2026-09-18
 
 ## Current implemented product functionality
 
-None.
+The current Experimental slice provides:
 
-The repository currently establishes documentation and governance only. It does not provide a supported photo server, web client, desktop client, mobile client, background uploader, media processor, search service, sharing service, intelligence service, synchronization service, or release artifact.
+- Go 1.27.1 server process foundation.
+- Loopback-by-default HTTP listener (`127.0.0.1:8780` unless explicitly configured).
+- `GET /api/v1/health` returning bounded version/lifecycle process health.
+- `GET /api/v1/ready` with fail-closed component state.
+- Readiness intentionally returns HTTP 503 because the PostgreSQL runtime adapter is not implemented.
+- Optional filesystem original-media store initialization through `GC_PHOTOS_STORAGE_ROOT`.
+- Immutable filesystem writes using staging, SHA-256 calculation/verification, no-overwrite commit semantics, bounded object keys, and regular-file checks.
+- Filesystem storage readiness probing.
+- Initial PostgreSQL migration baseline for libraries, memberships, original objects, assets, device asset state, upload sessions, ordered synchronization changes, durable jobs, and idempotency records.
+- Automated Go formatting, module reproducibility, vet, unit-test, migration-baseline, and binary-build validation.
+- Repository/contract baseline validation.
 
-## Repository capabilities currently present
+## Verified limitations
 
-- Canonical product and technical specification in `SPECIFICATIONS.md`.
-- Repository roadmap in `FEATURE-ROADMAP.md`.
-- Repository governance and status documentation.
-- Machine-readable GoreeCloud Platform Contract declaration.
-- Open-source licensing record.
-- Baseline editor and ignore configuration.
+The current foundation does **not** provide:
 
-These repository controls are not end-user Photos features.
+- a PostgreSQL runtime adapter or a ready service state;
+- a media-upload HTTP API;
+- authenticated users, GoreeCloud Identity runtime integration, or Photos authorization;
+- multi-user library operations;
+- asset creation through the API;
+- metadata extraction;
+- thumbnails or previews;
+- synchronization clients;
+- web, Android, Linux desktop, or Mobile B clients;
+- sharing, search, intelligence, editing, memories, import/export, backup, or restore;
+- a supported deployment or production release;
+- accepted Privacy Shield, Wardveil Security, Everkeep, Manager, Mesh, Policy, Observability, or Glaze UI integration.
 
-## Not yet implemented
+The filesystem store is an Experimental implementation component, not proof that a user's media has been backed up or protected.
 
-The following major product capabilities remain planned and unverified:
+## Repository and contract capabilities
 
-- Photo and video ingestion and immutable original storage.
-- Resumable uploads and automatic camera backup.
-- Multi-user libraries and authorization.
-- Timeline, albums, favorites, archive, trash, and protected media.
-- Incremental cross-device synchronization.
-- Offline media and device-storage optimization.
-- Search and indexing.
-- People, face, object, scene, OCR, landmark, and semantic intelligence.
-- Maps and location browsing.
-- Sharing, collaborative albums, and family libraries.
-- Non-destructive photo and video editing.
-- Memories and automatic collections.
-- Import, export, round-trip portability, backup, restore, and disaster recovery.
-- Glaze UI runtime implementation and acceptance.
-- GoreeCloud Identity, Privacy Shield, Wardveil Security, Everkeep, GoreeCloud Manager, GoreeCloud Mesh, GoreeCloud Policy, and GoreeCloud Observability runtime integration and acceptance.
+The repository also contains:
 
-See `SPECIFICATIONS.md` and `FEATURE-ROADMAP.md` for planned requirements.
+- canonical product specification and roadmap;
+- Phase 0 architecture, data model, API, recovery, dependency, platform-integration, and accessibility contracts;
+- machine-readable Asset, Sync Change, and Upload Session schemas;
+- Platform Contract 0.4 declaration;
+- AGPL-3.0-or-later fallback license record.
+
+See `FEATURE-ROADMAP.md` for the next implementation steps.
