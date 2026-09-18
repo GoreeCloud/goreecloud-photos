@@ -217,7 +217,7 @@ Needed to build/test but not operate the deployed service.
 
 Current example:
 
-- official PostgreSQL 17.6 Bookworm image pinned by digest for CI integration validation.
+- official PostgreSQL 17.11 Bookworm image pinned by digest for CI integration validation.
 
 Every material dependency must document class, owner, version/pin, update source, license, recovery/replacement path, and security/privacy implications.
 
