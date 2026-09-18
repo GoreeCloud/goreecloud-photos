@@ -107,12 +107,12 @@ if "Experimental" not in readme:
     fail("README must preserve Experimental lifecycle truth")
 
 features = (ROOT / "FEATURES.md").read_text(encoding="utf-8")
-for marker in ["Current implemented product functionality", "Go 1.27.1", "/api/v1/health", "PostgreSQL runtime adapter", "schema-aware"]:
+for marker in ["Current implemented product functionality", "Go 1.27.1", "/api/v1/health", "PostgreSQL runtime adapter", "schema-aware", "Durable upload-session", "conflicting retries"]:
     if marker not in features:
         fail(f"FEATURES.md missing Experimental implementation marker: {marker}")
 
 platform = (ROOT / "goreecloud.platform.yaml").read_text(encoding="utf-8")
-for required in ['schema_version: "0.4"', "lifecycle: experimental", 'version: "0.1.0-experimental.1"', 'health_endpoint: "/api/v1/health"', 'readiness_endpoint: "/api/v1/ready"', 'glaze_ui_required: "1.5.1"']:
+for required in ['schema_version: "0.4"', "lifecycle: experimental", 'version: "0.1.0-experimental.2"', 'health_endpoint: "/api/v1/health"', 'readiness_endpoint: "/api/v1/ready"', 'glaze_ui_required: "1.5.1"']:
     if required not in platform:
         fail(f"platform declaration missing required baseline: {required}")
 for key in PLATFORM_SYSTEM_KEYS:

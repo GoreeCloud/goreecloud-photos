@@ -1,7 +1,7 @@
 # GoreeCloud Photos — Data Model
 
 **Status:** Phase 0 domain-model baseline  
-**Implementation status:** Contract defined; persistent implementation not yet established.
+**Implementation status:** Contract defined; PostgreSQL persistence is partially established for core schema, readiness, upload sessions, and per-part upload receipt evidence. Most Photos domain operations remain unimplemented.
 
 ## 1. Identity and identifier rules
 
@@ -309,6 +309,33 @@ States:
 - cancelled
 
 Completion creates an Asset only after ingestion validation and authoritative commit.
+
+### Upload Part
+
+UploadPart is durable receipt evidence for one resumable-transfer part.
+
+Fields:
+
+- upload_id
+- part_number
+- byte_size
+- content_sha256
+- created_at
+
+The initial persistence contract uses one-based part numbers. A part number maps to a fixed byte range derived from the session part size.
+
+Rules:
+
+- each committed part must fit within the declared expected asset size;
+- non-final parts must use the negotiated part size;
+- the final part may be shorter only when it ends exactly at expected_size;
+- an identical retry of an already committed part is idempotent;
+- a retry with different byte size or checksum for the same upload_id and part_number is a conflict and must not replace committed evidence;
+- received_bytes is derived from committed part evidence, not trusted client progress;
+- part evidence survives process/adapter restart;
+- receipt evidence alone does not prove that corresponding media bytes are durably stored or that the asset is backed up.
+
+The PostgreSQL upload-session and UploadPart metadata persistence is implemented experimentally. The HTTP media-transfer, staging/assembly, final checksum, ingestion validation, OriginalObject creation, Asset creation, and SyncChange commit paths remain unimplemented.
 
 ## 14. Sync Change
 

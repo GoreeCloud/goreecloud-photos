@@ -1,7 +1,7 @@
 ---
 document_title: "GoreeCloud Photos — Planned Features and Capabilities"
 document_owner: "GoreeCloud"
-version: "v0.2"
+version: "v0.3"
 status: "Draft"
 created: "2026-09-18"
 classification: "Internal"
@@ -11,7 +11,7 @@ project_name: "GoreeCloud Photos"
 project_status: "Experimental"
 repository: "GoreeCloud/goreecloud-photos"
 development_model: "Original GoreeCloud-controlled native application and service"
-implementation_status: "Experimental server foundation validated; no supported Photos service, client, deployment, or production acceptance exists."
+implementation_status: "Experimental server, PostgreSQL readiness, and durable upload-session/part metadata persistence are validated; no media-upload HTTP path, supported Photos service/client, deployment, or production acceptance exists."
 verification_date: "2026-09-18"
 ---
 
@@ -22,7 +22,7 @@ verification_date: "2026-09-18"
 **Product:** GoreeCloud Photos  
 **Product Lifecycle:** Experimental  
 **Repository:** `GoreeCloud/goreecloud-photos`  
-**Repository State:** Experimental Go server foundation, immutable filesystem original-store adapter, PostgreSQL migration baseline, and exact-head CI validation exist; the service remains fail-closed/not-ready because the PostgreSQL runtime adapter and ordinary Photos workflows are not implemented.  
+**Repository State:** Experimental Go server foundation, pgx PostgreSQL runtime/readiness adapter, immutable filesystem original-store adapter, durable upload-session/part metadata persistence, migration baseline, and exact-head CI validation exist. No media-upload HTTP path, media-byte staging/assembly, authenticated Photos workflow, supported deployment, or production acceptance exists.  
 **Product Type:** Private photo and video library, backup, synchronization, organization, search, sharing, editing, intelligence, and preservation platform  
 **Design System:** Glaze UI V1.5 / 1.5.1 current Stable target  
 **Identity:** GoreeCloud Identity  
@@ -32,7 +32,7 @@ verification_date: "2026-09-18"
  
 > **Status integrity:** Unless independently verified in repository, runtime, test, security, privacy, recovery, release, or production evidence, capabilities described in this specification are planned requirements rather than implemented or accepted functionality.
 
-**Current implementation evidence:** the repository contains an Experimental Go 1.27.1 service foundation with bounded health/readiness endpoints, an immutable filesystem original-media storage adapter, an initial PostgreSQL schema/migration baseline, unit tests, and exact-head CI validation. This evidence does not establish media backup, database-backed library operation, upload APIs, authentication, synchronization, clients, platform-system acceptance, deployment, recovery readiness, or production suitability.
+**Current implementation evidence:** the repository contains an Experimental Go 1.27.1 service foundation with bounded health/readiness endpoints, a pgx v5.11.0 PostgreSQL adapter, schema-aware readiness, an immutable filesystem original-media storage adapter, durable PostgreSQL upload-session/per-part receipt metadata, migrations, integration tests against pinned PostgreSQL 18.6, and exact-head CI validation. This evidence does not establish a media-upload HTTP API, storage of uploaded media bytes through that protocol, final upload-to-Asset commit, authenticated library operation, backup, synchronization clients, platform-system acceptance, supported deployment, recovery readiness, or production suitability.
 
 GoreeCloud Photos should be developed as original GoreeCloud-controlled software rather than as a renamed or permanently architecture-dependent version of another photo platform.
   
