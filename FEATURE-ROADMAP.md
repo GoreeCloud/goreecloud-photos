@@ -1,17 +1,17 @@
 # GoreeCloud Photos — Feature Roadmap
 
 **Status:** Active roadmap control  
-**Lifecycle:** Concept / Planning  
+**Lifecycle:** Experimental  
 **As of:** 2026-09-18  
 **Canonical specification:** SPECIFICATIONS.md  
 **Repository:** GoreeCloud/goreecloud-photos  
-**Implementation status:** Phase 0 architecture and contracts defined; no supported Photos runtime is verified.
+**Implementation status:** First executable server foundation validated; ordinary Photos functionality and supported deployment remain unimplemented.
 
 > Roadmap entries are planned work unless a later exact revision and evidence explicitly establish implementation and acceptance.
 
 ## Phase 0 — Product Foundation
 
-**State:** Architecture/contract baseline established; executable implementation not started.
+**State:** Architecture/contract baseline plus first executable Experimental server foundation established.
 
 Completed definition work:
 
@@ -31,17 +31,27 @@ Completed definition work:
 - machine-readable Asset, Sync Change, and Upload Session schemas;
 - repository/contract baseline CI validation.
 
-Remaining before Phase 1 implementation can be considered established:
+Verified implementation foundation:
 
-- repository-local official Photos visual identity assets;
-- branch-protection administration using an authorized path;
-- concrete source tree and Go module;
-- actual PostgreSQL schema/migrations;
-- executable upload/storage slice;
-- exact dependency pins for implementation packages;
-- runtime tests and evidence.
+- Go 1.27.1 module and server source tree;
+- loopback-by-default health service;
+- fail-closed readiness reporting;
+- immutable filesystem original-media store adapter with SHA-256 verification and overwrite protection;
+- initial PostgreSQL migration baseline;
+- Go unit tests and pinned exact-head CI covering formatting, module reproducibility, vet, tests, migration validation, and binary build.
 
-**Exit condition:** the first bounded implementation slice exists and is validated without inventing unresolved security, privacy, storage, or recovery behavior.
+Remaining before Phase 1 can advance materially:
+
+- implement the PostgreSQL runtime adapter and make readiness capable of passing only when both database and original-media storage are healthy;
+- implement durable upload-session persistence and the first resumable upload/API path;
+- atomically create original-object/asset/synchronization records after verified media commit;
+- add an S3-compatible storage backend behind the existing storage boundary;
+- pin and document any newly introduced implementation dependencies;
+- establish repository-local official Photos visual identity assets;
+- resolve branch-protection administration using an authorized path;
+- expand runtime/security/privacy/recovery evidence as capabilities are introduced.
+
+**Exit condition:** a database-backed, restart-safe upload-to-asset vertical slice exists and is validated without inventing security, privacy, backup, or recovery claims.
 
 ## Phase 1 — Core Photo Server
 
