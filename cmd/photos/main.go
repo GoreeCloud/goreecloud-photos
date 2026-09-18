@@ -12,6 +12,7 @@ import (
 
 	"github.com/GoreeCloud/goreecloud-photos/internal/buildinfo"
 	"github.com/GoreeCloud/goreecloud-photos/internal/config"
+	"github.com/GoreeCloud/goreecloud-photos/internal/database"
 	"github.com/GoreeCloud/goreecloud-photos/internal/httpapi"
 	"github.com/GoreeCloud/goreecloud-photos/internal/storage"
 )
@@ -30,8 +31,20 @@ func main() {
 		originalStore = store
 	}
 
+	var databaseAdapter *database.PostgreSQL
+	if cfg.DatabaseURL != "" {
+		adapter, err := database.NewPostgreSQL(context.Background(), cfg.DatabaseURL)
+		if err != nil {
+			logger.Error("initialize PostgreSQL adapter", "error", err)
+			os.Exit(1)
+		}
+		databaseAdapter = adapter
+		defer databaseAdapter.Close()
+	}
+
 	handler := httpapi.New(buildinfo.Version, buildinfo.Lifecycle, httpapi.Dependencies{
-		Storage: originalStore,
+		Storage:  originalStore,
+		Database: databaseAdapter,
 	})
 
 	server := &http.Server{
@@ -61,7 +74,7 @@ func main() {
 		"starting GoreeCloud Photos experimental service",
 		"listen", cfg.ListenAddress,
 		"storage_configured", originalStore != nil,
-		"database_adapter", "not_implemented",
+		"database_configured", databaseAdapter != nil,
 		"version", buildinfo.Version,
 		"lifecycle", buildinfo.Lifecycle,
 	)

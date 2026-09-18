@@ -8,8 +8,13 @@ import (
 	"github.com/GoreeCloud/goreecloud-photos/internal/storage"
 )
 
+type ReadinessProbe interface {
+	Probe(context.Context) error
+}
+
 type Dependencies struct {
-	Storage storage.OriginalStore
+	Storage  storage.OriginalStore
+	Database ReadinessProbe
 }
 
 type Server struct {
@@ -64,29 +69,38 @@ func (s *Server) health(writer http.ResponseWriter, _ *http.Request) {
 }
 
 func (s *Server) ready(writer http.ResponseWriter, request *http.Request) {
-	components := map[string]componentState{
-		"database": {
-			Status: "blocked",
-			Detail: "adapter_not_implemented",
-		},
+	components := make(map[string]componentState, 2)
+	ready := true
+
+	if s.deps.Database == nil {
+		ready = false
+		components["database"] = componentState{Status: "blocked", Detail: "not_configured"}
+	} else if err := s.deps.Database.Probe(request.Context()); err != nil {
+		ready = false
+		components["database"] = componentState{Status: "unavailable", Detail: "probe_failed"}
+	} else {
+		components["database"] = componentState{Status: "ready"}
 	}
 
 	if s.deps.Storage == nil {
-		components["original_media_store"] = componentState{
-			Status: "blocked",
-			Detail: "not_configured",
-		}
+		ready = false
+		components["original_media_store"] = componentState{Status: "blocked", Detail: "not_configured"}
 	} else if err := s.deps.Storage.Probe(request.Context()); err != nil {
-		components["original_media_store"] = componentState{
-			Status: "unavailable",
-			Detail: "probe_failed",
-		}
+		ready = false
+		components["original_media_store"] = componentState{Status: "unavailable", Detail: "probe_failed"}
 	} else {
 		components["original_media_store"] = componentState{Status: "ready"}
 	}
 
-	writeJSON(writer, http.StatusServiceUnavailable, readinessResponse{
-		Status:     "not_ready",
+	status := http.StatusServiceUnavailable
+	payloadStatus := "not_ready"
+	if ready {
+		status = http.StatusOK
+		payloadStatus = "ready"
+	}
+
+	writeJSON(writer, status, readinessResponse{
+		Status:     payloadStatus,
 		Version:    s.version,
 		Lifecycle:  s.lifecycle,
 		Components: components,
@@ -98,11 +112,4 @@ func writeJSON(writer http.ResponseWriter, status int, value any) {
 	writer.Header().Set("Cache-Control", "no-store")
 	writer.WriteHeader(status)
 	_ = json.NewEncoder(writer).Encode(value)
-}
-
-func probeWithContext(ctx context.Context, probe func(context.Context) error) error {
-	if err := ctx.Err(); err != nil {
-		return err
-	}
-	return probe(ctx)
 }

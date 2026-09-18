@@ -1,7 +1,7 @@
 # GoreeCloud Photos — Dependency and Implementation Stack Policy
 
-**Status:** Phase 0 dependency baseline  
-**Runtime dependency state:** No Photos runtime dependencies are yet installed or accepted.
+**Status:** Experimental dependency baseline  
+**Runtime dependency state:** Go 1.27.1 is pinned. `github.com/jackc/pgx/v5` is approved and pinned at v5.11.0 for the PostgreSQL runtime boundary. No media-processing or intelligence dependency is yet accepted.
 
 ## 1. Governing rule
 
@@ -23,7 +23,7 @@ Reasons:
 - good fit for API, synchronization, upload coordination, and workers;
 - low runtime operational overhead.
 
-The toolchain must be pinned in source/CI when implementation begins.
+The toolchain is pinned in source and verified in CI.
 
 ### PostgreSQL
 
@@ -39,6 +39,40 @@ Owns:
 - idempotency records.
 
 Using one database initially reduces dependency count and transaction-boundary complexity.
+
+### pgx v5.11.0
+
+**Source:** `github.com/jackc/pgx/v5`  
+**Pinned version:** `v5.11.0`  
+**License:** MIT  
+**Dependency class:** Required runtime library for the PostgreSQL boundary  
+**Update source:** upstream tagged pgx releases and Go module metadata
+
+Role:
+
+- PostgreSQL connection pooling;
+- connectivity/readiness probing;
+- database-backed Photos domain operations as they are introduced;
+- PostgreSQL integration validation.
+
+Boundary:
+
+- GoreeCloud Photos owns database semantics, schema, migrations, transaction boundaries, authorization, and domain contracts.
+- pgx does not define Photos data meaning or become a persistent data format.
+- connection strings and credentials are configuration secrets and must not be logged.
+- the adapter returns bounded errors rather than embedding credentials or raw connection strings in public status output.
+
+Replacement path:
+
+- PostgreSQL-specific code remains behind the GoreeCloud-owned `internal/database` boundary;
+- persistent schema/data remains standard PostgreSQL state;
+- replacing the Go driver must not change stable Asset or API semantics.
+
+Security/update considerations:
+
+- pgx is maintained as the current stable v5 line;
+- updates require exact-version review, CI, migration compatibility checks, and security review before adoption;
+- database transport/authentication requirements remain deployment policy and must not be weakened by application defaults.
 
 ### Storage-driver abstraction
 
@@ -158,7 +192,11 @@ Initial examples once implemented:
 
 Needed for a supported capability but not the preservation of all authoritative data.
 
-Potential examples:
+Initial example:
+
+- pgx PostgreSQL runtime library.
+
+Potential later examples:
 
 - media processor for derivative generation;
 - platform-native client runtime.
@@ -177,17 +215,19 @@ Examples:
 
 Needed to build/test but not operate the deployed service.
 
+Current example:
+
+- official PostgreSQL 17.6 Bookworm image pinned by digest for CI integration validation.
+
 Every material dependency must document class, owner, version/pin, update source, license, recovery/replacement path, and security/privacy implications.
 
 ## 8. Locking and provenance
 
-When implementation begins:
-
-- Go modules use go.mod/go.sum and pinned toolchain.
+- Go modules use `go.mod`/`go.sum` with exact direct dependency versions and a pinned Go toolchain.
 - Web dependencies use a committed lockfile.
 - Android dependencies use Gradle version controls and dependency locking where supported.
 - Rust uses Cargo.lock for application deliverables.
-- Container base images are pinned according to GoreeCloud image-pinning requirements.
+- Container images are pinned by immutable digest where used.
 - GitHub Actions use immutable commit SHAs.
 - Dependency reports are generated as validation evidence where appropriate.
 

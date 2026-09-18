@@ -17,11 +17,27 @@ concurrency:
 
 jobs:
   validate:
-    name: Format, vet, test, migrations, and build
+    name: Format, vet, test, PostgreSQL, migrations, and build
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 12
     env:
       GOTOOLCHAIN: local
+      GC_PHOTOS_TEST_DATABASE_URL: postgres://photos_test:photos_test@127.0.0.1:5432/goreecloud_photos_test?sslmode=disable
+
+    services:
+      postgres:
+        image: postgres:17.6-bookworm@sha256:051f7b7b3abdd564d5d1bd1e8c4b9c1b6e77087d1dd22020ede611c096a272e0
+        env:
+          POSTGRES_USER: photos_test
+          POSTGRES_PASSWORD: photos_test
+          POSTGRES_DB: goreecloud_photos_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U photos_test -d goreecloud_photos_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
 
     steps:
       - name: Check out exact candidate
