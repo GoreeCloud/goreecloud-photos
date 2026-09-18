@@ -44,10 +44,12 @@ The verified Experimental foundation currently includes:
 - a Go 1.27.1 service binary;
 - loopback-by-default HTTP serving;
 - `GET /api/v1/health`;
-- fail-closed `GET /api/v1/ready`, which currently returns HTTP 503 because the PostgreSQL runtime adapter is not implemented;
+- fail-closed `GET /api/v1/ready`, which returns ready only when both the PostgreSQL core schema and original-media storage probe successfully;
+- a pgx v5.11.0 PostgreSQL runtime adapter configured by `GC_PHOTOS_DATABASE_URL`;
+- schema-aware PostgreSQL readiness that rejects an unmigrated or incomplete core schema;
 - an immutable filesystem original-media store adapter with SHA-256 verification and overwrite protection;
 - an initial PostgreSQL schema/migration baseline for libraries, ownership, assets, originals, upload sessions, synchronization changes, durable jobs, and idempotency records;
-- unit tests plus repository, migration, vet, test, and build validation.
+- database-backed integration tests against pinned PostgreSQL 18.6 plus repository, migration, vet, unit-test, and build validation.
 
 PostgreSQL remains the selected authoritative relational store, but no runtime database adapter is implemented yet. TypeScript + React web, native Android, native Linux desktop, S3-compatible storage, and Mobile B remain planned implementation targets rather than current runtime capabilities.
 
@@ -66,7 +68,7 @@ All application-specific platform integrations remain blocked pending implementa
 
 The product is being developed as original GoreeCloud-controlled software. It is not intended to be a renamed or permanently architecture-dependent copy of another photo platform.
 
-An Experimental server foundation is verified, but it does not expose a media-upload API and is intentionally not ready because the database adapter is absent. Do not use this repository as evidence that media has been backed up, synchronized, protected, encrypted, indexed, recoverable, or safely deletable from a device.
+An Experimental server foundation is verified, including PostgreSQL connectivity/readiness and immutable filesystem storage primitives, but it still does not expose a media-upload API or authenticated library workflow. Do not use this repository as evidence that media has been backed up, synchronized, protected, encrypted, indexed, recoverable, or safely deletable from a device.
 
 ## License
 
@@ -75,3 +77,12 @@ Unless superseded by an authorized Photos-specific license decision, this reposi
 ## Status integrity
 
 Documentation, machine-readable contracts, CI validation, design intent, planned integrations, and repository structure do not establish implementation, release, security acceptance, privacy acceptance, recovery acceptance, or production readiness. Those states require independent evidence for the exact code and runtime being evaluated.
+
+
+## Experimental runtime configuration
+
+- `GC_PHOTOS_LISTEN` — optional listen address; defaults to loopback `127.0.0.1:8780`.
+- `GC_PHOTOS_STORAGE_ROOT` — filesystem original-media storage root for the current Experimental storage adapter.
+- `GC_PHOTOS_DATABASE_URL` — PostgreSQL connection string for the Experimental database adapter. Treat it as a secret; it must not be logged or committed.
+
+If either required runtime dependency is missing or fails its probe, `/api/v1/ready` fails closed. A reachable database is not sufficient by itself: the complete core schema must also be present.

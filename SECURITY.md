@@ -8,6 +8,14 @@ This repository now contains an Experimental Go service foundation and filesyste
 
 The filesystem adapter's local integrity/immutability tests are not Wardveil acceptance. No statement in this repository should be interpreted as proof that personal media is currently protected by Wardveil Security or by a production-ready Photos implementation.
 
+## Experimental database boundary
+
+The PostgreSQL connection string is configuration secret material. The service reads it from `GC_PHOTOS_DATABASE_URL`; it is not returned by health/readiness responses and must not be committed or logged.
+
+Database readiness exposes only bounded `ready` / `unavailable` state. A reachable PostgreSQL server is insufficient: the required core schema must also be present before the database component can report ready.
+
+The current CI database is disposable test infrastructure and does not establish production database security, transport policy, backup, recovery, or deployment acceptance.
+
 ## Planned security requirements
 
 Future implementation must address, as applicable:

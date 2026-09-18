@@ -10,7 +10,7 @@ component:
   repository: GoreeCloud/goreecloud-photos
 
 lifecycle: experimental
-version: "0.1.0-experimental.0"
+version: "0.1.0-experimental.1"
 
 supported_platforms: []
 
@@ -23,7 +23,7 @@ api:
       purpose: "Return bounded process-health and build/lifecycle identity for the Experimental service."
     - name: readiness
       url: "/api/v1/ready"
-      purpose: "Fail closed until required runtime dependencies are implemented and healthy; currently returns non-ready because the PostgreSQL adapter is absent."
+      purpose: "Return ready only when the PostgreSQL core schema and original-media storage are both configured and healthy; otherwise fail closed."
 
 platform_systems:
   manager:
@@ -112,6 +112,7 @@ evidence:
   acceptance_tests:
     - internal/config/config_test.go
     - internal/storage/fsstore_test.go
+    - internal/database/postgres_integration_test.go
     - internal/httpapi/server_test.go
     - scripts/validate_migrations.py
   release: []
@@ -136,7 +137,7 @@ conformance:
     - goreecloud.platform.yaml
   blockers:
     - "Only an Experimental health/readiness and filesystem-storage foundation exists; no supported Photos service or user-facing client exists."
-    - "The executable server and PostgreSQL schema baseline are verified, but no PostgreSQL runtime adapter, media-upload API, S3-compatible adapter, client implementation, or worker pipeline is implemented."
+    - "The executable server, PostgreSQL schema baseline, and PostgreSQL readiness adapter are verified, but no media-upload API, database-backed library workflow, S3-compatible adapter, client implementation, or worker pipeline is implemented."
     - "No Photos-specific acceptance evidence exists for any of the nine Integral Platform Systems."
     - "No Glaze UI 1.5.1 Photos consumer-conformance evidence exists."
     - "No release artifact, deployment, production-readiness evidence, or Stable qualification exists."
