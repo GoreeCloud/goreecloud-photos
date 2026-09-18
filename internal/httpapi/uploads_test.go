@@ -265,7 +265,7 @@ func TestUploadPartRejectsShortBodyWithoutCommittingStaging(t *testing.T) {
 	admission := testUploadAdmission{
 		decision: UploadAdmissionDecision{
 			ActorSubjectID: "subject:test",
-			Policy: UploadPolicy{MaxAssetBytes: 100, PartSize: 4, SessionTTL: time.Hour},
+			Policy:         UploadPolicy{MaxAssetBytes: 100, PartSize: 4, SessionTTL: time.Hour},
 		},
 	}
 	server := New("test", "experimental", Dependencies{
