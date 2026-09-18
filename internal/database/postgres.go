@@ -64,6 +64,7 @@ func (p *PostgreSQL) Probe(ctx context.Context) error {
 			to_regclass('public.assets') IS NOT NULL AND
 			to_regclass('public.device_asset_states') IS NOT NULL AND
 			to_regclass('public.upload_sessions') IS NOT NULL AND
+			to_regclass('public.upload_parts') IS NOT NULL AND
 			to_regclass('public.sync_changes') IS NOT NULL AND
 			to_regclass('public.jobs') IS NOT NULL AND
 			to_regclass('public.idempotency_records') IS NOT NULL
