@@ -67,7 +67,21 @@ func (p *PostgreSQL) Probe(ctx context.Context) error {
 			to_regclass('public.upload_parts') IS NOT NULL AND
 			to_regclass('public.sync_changes') IS NOT NULL AND
 			to_regclass('public.jobs') IS NOT NULL AND
-			to_regclass('public.idempotency_records') IS NOT NULL
+			to_regclass('public.idempotency_records') IS NOT NULL AND
+			EXISTS (
+				SELECT 1
+				FROM information_schema.columns
+				WHERE table_schema = 'public'
+					AND table_name = 'upload_sessions'
+					AND column_name = 'original_filename'
+			) AND
+			EXISTS (
+				SELECT 1
+				FROM information_schema.columns
+				WHERE table_schema = 'public'
+					AND table_name = 'upload_sessions'
+					AND column_name = 'capture_time_zone'
+			)
 	`).Scan(&schemaReady); err != nil || !schemaReady {
 		return ErrProbeFailed
 	}

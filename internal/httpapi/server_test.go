@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/GoreeCloud/goreecloud-photos/internal/storage"
 )
@@ -18,13 +19,16 @@ func (f readinessProbeFunc) Probe(ctx context.Context) error {
 }
 
 func TestHealth(t *testing.T) {
-	server := New("0.1.0-experimental.0", "experimental", Dependencies{})
+	server := New("0.1.0-experimental.2", "experimental", Dependencies{})
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/health", nil)
 	response := httptest.NewRecorder()
 
 	server.ServeHTTP(response, request)
 	if response.Code != http.StatusOK {
 		t.Fatalf("unexpected status: %d", response.Code)
+	}
+	if response.Header().Get("X-Request-ID") == "" {
+		t.Fatal("health response is missing X-Request-ID")
 	}
 
 	var body healthResponse
@@ -39,23 +43,33 @@ func TestHealth(t *testing.T) {
 	}
 }
 
-func TestReadinessSucceedsWithHealthyDatabaseAndStorage(t *testing.T) {
+func TestReadinessSucceedsWithHealthyRequiredDependencies(t *testing.T) {
 	store, err := storage.NewFilesystem(t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
-	server := New("0.1.0-experimental.0", "experimental", Dependencies{
+	server := New("test", "experimental", Dependencies{
 		Storage: store,
 		Database: readinessProbeFunc(func(context.Context) error {
 			return nil
 		}),
+		UploadAdmission: testUploadAdmission{
+			decision: UploadAdmissionDecision{
+				ActorSubjectID: "subject:test",
+				Policy: UploadPolicy{
+					MaxAssetBytes: 100,
+					PartSize:      4,
+					SessionTTL:    time.Hour,
+				},
+			},
+		},
 	})
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/ready", nil)
 	response := httptest.NewRecorder()
 
 	server.ServeHTTP(response, request)
 	if response.Code != http.StatusOK {
-		t.Fatalf("unexpected status: %d", response.Code)
+		t.Fatalf("unexpected status: %d body=%s", response.Code, response.Body.String())
 	}
 
 	var body readinessResponse
@@ -65,11 +79,37 @@ func TestReadinessSucceedsWithHealthyDatabaseAndStorage(t *testing.T) {
 	if body.Status != "ready" {
 		t.Fatalf("unexpected readiness status: %q", body.Status)
 	}
-	if body.Components["database"].Status != "ready" {
-		t.Fatalf("database should be ready: %#v", body.Components["database"])
+	if body.Components["database"].Status != "ready" ||
+		body.Components["original_media_store"].Status != "ready" ||
+		body.Components["upload_admission"].Status != "ready" {
+		t.Fatalf("unexpected components: %#v", body.Components)
 	}
-	if body.Components["original_media_store"].Status != "ready" {
-		t.Fatalf("storage should be ready: %#v", body.Components["original_media_store"])
+}
+
+func TestReadinessFailsClosedWithoutUploadAdmission(t *testing.T) {
+	store, err := storage.NewFilesystem(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	server := New("test", "experimental", Dependencies{
+		Storage: store,
+		Database: readinessProbeFunc(func(context.Context) error {
+			return nil
+		}),
+	})
+	request := httptest.NewRequest(http.MethodGet, "/api/v1/ready", nil)
+	response := httptest.NewRecorder()
+
+	server.ServeHTTP(response, request)
+	if response.Code != http.StatusServiceUnavailable {
+		t.Fatalf("unexpected status: %d", response.Code)
+	}
+	var body readinessResponse
+	if err := json.Unmarshal(response.Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	if body.Components["upload_admission"].Detail != "authorization_not_configured" {
+		t.Fatalf("unexpected upload admission state: %#v", body.Components["upload_admission"])
 	}
 }
 
@@ -78,7 +118,10 @@ func TestReadinessFailsClosedWithoutDatabaseConfiguration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	server := New("0.1.0-experimental.0", "experimental", Dependencies{Storage: store})
+	server := New("test", "experimental", Dependencies{
+		Storage:         store,
+		UploadAdmission: testUploadAdmission{decision: UploadAdmissionDecision{ActorSubjectID: "subject:test"}},
+	})
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/ready", nil)
 	response := httptest.NewRecorder()
 
@@ -91,11 +134,8 @@ func TestReadinessFailsClosedWithoutDatabaseConfiguration(t *testing.T) {
 	if err := json.Unmarshal(response.Body.Bytes(), &body); err != nil {
 		t.Fatal(err)
 	}
-	if body.Status != "not_ready" {
-		t.Fatalf("unexpected readiness status: %q", body.Status)
-	}
-	if body.Components["database"].Detail != "not_configured" {
-		t.Fatalf("unexpected database state: %#v", body.Components["database"])
+	if body.Status != "not_ready" || body.Components["database"].Detail != "not_configured" {
+		t.Fatalf("unexpected readiness state: %#v", body)
 	}
 }
 
@@ -104,11 +144,12 @@ func TestReadinessFailsClosedWhenDatabaseProbeFails(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	server := New("0.1.0-experimental.0", "experimental", Dependencies{
+	server := New("test", "experimental", Dependencies{
 		Storage: store,
 		Database: readinessProbeFunc(func(context.Context) error {
 			return errors.New("database unavailable")
 		}),
+		UploadAdmission: testUploadAdmission{decision: UploadAdmissionDecision{ActorSubjectID: "subject:test"}},
 	})
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/ready", nil)
 	response := httptest.NewRecorder()
@@ -128,10 +169,11 @@ func TestReadinessFailsClosedWhenDatabaseProbeFails(t *testing.T) {
 }
 
 func TestReadinessReportsUnconfiguredStorage(t *testing.T) {
-	server := New("0.1.0-experimental.0", "experimental", Dependencies{
+	server := New("test", "experimental", Dependencies{
 		Database: readinessProbeFunc(func(context.Context) error {
 			return nil
 		}),
+		UploadAdmission: testUploadAdmission{decision: UploadAdmissionDecision{ActorSubjectID: "subject:test"}},
 	})
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/ready", nil)
 	response := httptest.NewRecorder()

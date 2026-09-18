@@ -24,6 +24,11 @@ MIGRATIONS = [
         ROOT / "migrations" / "000002_upload_parts.down.sql",
         ["upload_parts"],
     ),
+    (
+        ROOT / "migrations" / "000003_upload_session_metadata.up.sql",
+        ROOT / "migrations" / "000003_upload_session_metadata.down.sql",
+        [],
+    ),
 ]
 
 for up_path, down_path, tables in MIGRATIONS:
@@ -59,5 +64,16 @@ for marker in [
 ]:
     if marker not in upload_parts_up:
         raise SystemExit(f"upload-parts migration missing invariant: {marker}")
+
+upload_metadata_up = MIGRATIONS[2][0].read_text(encoding="utf-8")
+for marker in [
+    "ADD COLUMN original_filename TEXT",
+    "ADD COLUMN media_type TEXT",
+    "ADD COLUMN device_id TEXT",
+    "ADD COLUMN capture_time TIMESTAMPTZ",
+    "ADD COLUMN capture_time_zone TEXT",
+]:
+    if marker not in upload_metadata_up:
+        raise SystemExit(f"upload-session metadata migration missing invariant: {marker}")
 
 print("GoreeCloud Photos migration baseline validation passed.")

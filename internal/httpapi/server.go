@@ -3,8 +3,12 @@ package httpapi
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"sync/atomic"
+	"time"
 
+	"github.com/GoreeCloud/goreecloud-photos/internal/id"
 	"github.com/GoreeCloud/goreecloud-photos/internal/storage"
 )
 
@@ -13,8 +17,11 @@ type ReadinessProbe interface {
 }
 
 type Dependencies struct {
-	Storage  storage.OriginalStore
-	Database ReadinessProbe
+	Storage          storage.OriginalStore
+	Database         ReadinessProbe
+	UploadRepository UploadRepository
+	UploadStaging    storage.UploadStagingStore
+	UploadAdmission  UploadAdmission
 }
 
 type Server struct {
@@ -42,6 +49,17 @@ type readinessResponse struct {
 	Components map[string]componentState `json:"components"`
 }
 
+type apiErrorResponse struct {
+	Code      string `json:"code"`
+	Message   string `json:"message"`
+	RequestID string `json:"request_id"`
+	Retryable bool   `json:"retryable"`
+}
+
+type requestIDContextKey struct{}
+
+var fallbackRequestCounter atomic.Uint64
+
 func New(version string, lifecycle string, deps Dependencies) *Server {
 	server := &Server{
 		version:   version,
@@ -52,7 +70,10 @@ func New(version string, lifecycle string, deps Dependencies) *Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/v1/health", server.health)
 	mux.HandleFunc("GET /api/v1/ready", server.ready)
-	server.handler = mux
+	mux.HandleFunc("POST /api/v1/libraries/{library_id}/uploads", server.createUploadSession)
+	mux.HandleFunc("GET /api/v1/uploads/{upload_id}", server.inspectUploadSession)
+	mux.HandleFunc("PUT /api/v1/uploads/{upload_id}/parts/{part_number}", server.putUploadPart)
+	server.handler = withRequestID(mux)
 	return server
 }
 
@@ -69,7 +90,7 @@ func (s *Server) health(writer http.ResponseWriter, _ *http.Request) {
 }
 
 func (s *Server) ready(writer http.ResponseWriter, request *http.Request) {
-	components := make(map[string]componentState, 2)
+	components := make(map[string]componentState, 3)
 	ready := true
 
 	if s.deps.Database == nil {
@@ -92,6 +113,16 @@ func (s *Server) ready(writer http.ResponseWriter, request *http.Request) {
 		components["original_media_store"] = componentState{Status: "ready"}
 	}
 
+	if s.deps.UploadAdmission == nil {
+		ready = false
+		components["upload_admission"] = componentState{Status: "blocked", Detail: "authorization_not_configured"}
+	} else if err := s.deps.UploadAdmission.Probe(request.Context()); err != nil {
+		ready = false
+		components["upload_admission"] = componentState{Status: "unavailable", Detail: "probe_failed"}
+	} else {
+		components["upload_admission"] = componentState{Status: "ready"}
+	}
+
 	status := http.StatusServiceUnavailable
 	payloadStatus := "not_ready"
 	if ready {
@@ -104,6 +135,31 @@ func (s *Server) ready(writer http.ResponseWriter, request *http.Request) {
 		Version:    s.version,
 		Lifecycle:  s.lifecycle,
 		Components: components,
+	})
+}
+
+func withRequestID(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		requestID, err := id.NewUUIDv7()
+		if err != nil {
+			requestID = fmt.Sprintf("fallback-%x-%x", time.Now().UnixNano(), fallbackRequestCounter.Add(1))
+		}
+		writer.Header().Set("X-Request-ID", requestID)
+		next.ServeHTTP(writer, request.WithContext(context.WithValue(request.Context(), requestIDContextKey{}, requestID)))
+	})
+}
+
+func requestID(request *http.Request) string {
+	value, _ := request.Context().Value(requestIDContextKey{}).(string)
+	return value
+}
+
+func writeAPIError(writer http.ResponseWriter, request *http.Request, status int, code string, message string, retryable bool) {
+	writeJSON(writer, status, apiErrorResponse{
+		Code:      code,
+		Message:   message,
+		RequestID: requestID(request),
+		Retryable: retryable,
 	})
 }
 
